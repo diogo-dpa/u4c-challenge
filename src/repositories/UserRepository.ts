@@ -1,5 +1,5 @@
 import { User } from "../entities/User";
-import { IUserRepository } from "./interfaces/IUserRepository";
+import { IUserRepository } from "../irepositories/IUserRepository";
 import { DataSource, Repository } from "typeorm";
 
 export class UserRepository implements IUserRepository {
@@ -10,17 +10,25 @@ export class UserRepository implements IUserRepository {
 	}
 
 	async saveUser(
-		firstName: string,
-		midName: string,
-		lastName: string,
-		isActive: boolean
+		fullName: string,
+		birthDate: string,
+		email: string,
+		isThirdPartyUser: boolean,
+		cellphone: string,
+		address: number,
+		document: number
 	): Promise<User> {
 		const userTeste = {
-			firstName,
-			lastName,
-			midName,
-			isActive,
-		} as User;
+			fullName,
+			birthDate: new Date(),
+			email,
+			isThirdPartyUser,
+			cellphone,
+			address,
+			document,
+		} as any;
+
+		console.log({ userTeste });
 		const result = await this._dbConnection.save(userTeste);
 		return result;
 	}

@@ -9,9 +9,34 @@ export class UserController {
 	}
 
 	async saveUser(request: Request, reply: ResponseToolkit) {
-		const name = request.params.name;
-		console.log({ name });
-		const result = await this._userService.saveUser(name);
+		const {
+			fullName,
+			birthDate,
+			email,
+			cellphone,
+			isThirdPartyUser,
+			documents,
+			addressData,
+		} = request.payload as any;
+
+		console.log({
+			fullName,
+			birthDate,
+			email,
+			cellphone,
+			isThirdPartyUser,
+			documents,
+			addressData,
+		});
+		const result = await this._userService.saveUser(
+			fullName,
+			birthDate,
+			email,
+			cellphone,
+			isThirdPartyUser,
+			documents,
+			addressData
+		);
 		console.log({ result });
 
 		return reply.response({
