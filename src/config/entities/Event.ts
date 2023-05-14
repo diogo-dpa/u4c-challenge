@@ -6,6 +6,7 @@ import {
 	ManyToMany,
 	ManyToOne,
 	OneToOne,
+	Unique,
 } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
@@ -15,17 +16,26 @@ import { Address } from "./Address";
 
 @Entity()
 export class Event extends BaseEntity {
-	@ManyToMany(() => User)
+	@ManyToMany(() => User, (client) => client.clientEvents, {
+		cascade: true,
+        eager: true,
+    })
 	@JoinTable()
 	client: User[];
 
-	@ManyToMany(() => User)
+	@ManyToMany(() => User, (thirrdPartyUser) => thirrdPartyUser.thirdPartyUserEvents, {
+		cascade: true,
+        eager: true,
+    })
 	@JoinTable()
 	thirdPartyUser: User[];
 
-	@ManyToMany(() => Vehicle)
+	@ManyToMany(() => Vehicle, (vehicle) => vehicle.vehicleEvents, {
+		cascade: true,
+        eager: true,
+    })
 	@JoinTable()
-	vehicle: Vehicle[];
+	vehicles: Vehicle[];
 
 	@OneToOne(() => OccurenceType)
 	@JoinColumn()

@@ -1,6 +1,7 @@
-import { User } from "../entities/User";
+import { User } from "../config/entities/User";
 import { IUserRepository } from "../irepositories/IUserRepository";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, DeleteResult, Repository, UpdateResult } from "typeorm";
+import { AddressData, DocumentData } from "../iservices/IUserService";
 
 export class UserRepository implements IUserRepository {
 	private _dbConnection: Repository<User>;
@@ -8,28 +9,83 @@ export class UserRepository implements IUserRepository {
 	constructor(dbConnection: DataSource) {
 		this._dbConnection = dbConnection.getRepository(User);
 	}
+	public async getUser(id: number): Promise<User> {
+		const usersFound = await this._dbConnection.find({
+			where: {
+				id
+			},
+			relations: {
+				document: true,
+				addresses: true
+			}
+			
+		})
+		
+		return usersFound.pop()
+	}
+
+	public async updateUser(
+		id: number, 
+		email: string, 
+		isThirdPartyUser: boolean, 
+		cellphone: string
+	): Promise<User> {
+		console.log('aqui')
+		const usersFound = await this._dbConnection.find({
+			where: {
+				id
+			},
+			relations: {
+				document: true,
+				addresses: true
+			}
+			
+		})
+
+		
+		if (!usersFound) throw new Error('User not found')
+		const userFound = usersFound.pop()
+		console.log({userFound})
+
+		return await this._dbConnection.save({
+			...userFound,
+			email: email ?? userFound.email,
+			isThirdPartyUser: isThirdPartyUser ?? userFound.isThirdPartyUser,
+			cellphone: cellphone ?? userFound.cellphone,
+		})
+	}
+
+	public async deleteUser(id: number): Promise<void> {
+		const userFound = await this._dbConnection.findOneBy({
+			id
+		});
+
+		if (!userFound) throw new Error('User not found')
+
+		await this._dbConnection.remove(userFound);
+	}
 
 	async saveUser(
 		fullName: string,
 		birthDate: string,
 		email: string,
-		isThirdPartyUser: boolean,
 		cellphone: string,
-		address: number,
+		isThirdPartyUser: boolean,
+		address: AddressData,
 		document: number
 	): Promise<User> {
 		const userTeste = {
 			fullName,
-			birthDate: new Date(),
+			birthDate,
 			email,
 			isThirdPartyUser,
 			cellphone,
-			address,
+			addresses: [address],
 			document,
 		} as any;
 
-		console.log({ userTeste });
 		const result = await this._dbConnection.save(userTeste);
+		console.log({ result });
 		return result;
 	}
 }

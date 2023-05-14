@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { User } from "../entities/User";
-import { Address } from "../entities/Address";
-import { Document } from "../entities/Document";
-import { Event } from "../entities/Event";
-import { OccurenceType } from "../entities/OccurenceType";
-import { Vehicle } from "../entities/Vehicle";
+import { User } from "./entities/User";
+import { Address } from "./entities/Address";
+import { Document } from "./entities/Document";
+import { Event } from "./entities/Event";
+import { OccurenceType } from "./entities/OccurenceType";
+import { Vehicle } from "./entities/Vehicle";
 
 export const AppDataSource = new DataSource({
 	type: "postgres",

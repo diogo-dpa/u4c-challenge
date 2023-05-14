@@ -1,4 +1,4 @@
-import { Address } from "../entities/Address";
+import { Address } from "../config/entities/Address";
 import { IAddressRepository } from "../irepositories/IAddressRepository";
 import { DataSource, Repository } from "typeorm";
 
@@ -7,6 +7,15 @@ export class AddressRepository implements IAddressRepository {
 
 	constructor(dbConnection: DataSource) {
 		this._dbConnection = dbConnection.getRepository(Address);
+	}
+	public getAddress(id: number): Promise<Address> {
+		throw new Error("Method not implemented.");
+	}
+	public updateAddress(id: number, zipcode?: string, street?: string, number?: number, state?: string, country?: string, neighborhood?: string, complement?: string): Promise<Address> {
+		throw new Error("Method not implemented.");
+	}
+	public deleteAddress(id: number): Promise<Address> {
+		throw new Error("Method not implemented.");
 	}
 
 	async saveAddress(

@@ -1,4 +1,4 @@
-import { User } from "../entities/User";
+import { User } from "../config/entities/User";
 import {
 	AddressData,
 	DocumentData,
@@ -22,13 +22,34 @@ export class UserService implements IUserService {
 		this._documentService = documentService;
 		this._addressService = addressService;
 	}
+	public async getUser(id: number): Promise<User> {
+		return await this._userRepository.getUser(id);
+	}
+
+	public async updateUser(
+		id: number, 
+		email: string, 
+		cellphone: string,
+		isThirdPartyUser: boolean, 
+	): Promise<User> {
+		return await this._userRepository.updateUser(
+			id,
+			email,
+			isThirdPartyUser,
+			cellphone
+		);
+	}
+
+	public async deleteUser(id: number): Promise<void> {
+		await this._userRepository.deleteUser(id);
+	}
 
 	async saveUser(
 		fullName: string,
 		birthDate: string,
 		email: string,
-		isThirdPartyUser: boolean,
 		cellphone: string,
+		isThirdPartyUser: boolean,
 		documentData: DocumentData,
 		addressData: AddressData
 	): Promise<User> {
@@ -44,16 +65,6 @@ export class UserService implements IUserService {
 			neighborhood,
 		} = addressData;
 
-		const createdAddress = await this._addressService.saveAddress(
-			zipcode,
-			street,
-			number,
-			state,
-			country,
-			neighborhood,
-			complement
-		);
-
 		const createdDocument = await this._documentService.saveDocument(
 			rg,
 			cpf,
@@ -64,9 +75,9 @@ export class UserService implements IUserService {
 			fullName,
 			birthDate,
 			email,
-			isThirdPartyUser,
 			cellphone,
-			createdAddress.id,
+			isThirdPartyUser,
+			addressData,
 			createdDocument.id
 		);
 		return result;

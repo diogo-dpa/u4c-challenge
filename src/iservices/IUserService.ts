@@ -1,4 +1,4 @@
-import { User } from "../entities/User";
+import { User } from "../config/entities/User";
 
 export interface DocumentData {
 	rg: string;
@@ -21,9 +21,24 @@ export abstract class IUserService {
 		fullName: string,
 		birthDate: string,
 		email: string,
-		isThirdPartyUser: boolean,
 		cellphone: string,
+		isThirdPartyUser: boolean,
 		documentData: DocumentData,
 		addressData: AddressData
 	): Promise<User>;
+
+	public abstract getUser(
+		id: number
+	): Promise<User>;
+
+	public abstract updateUser(
+		id: number,
+		email: string,
+		cellphone: string,
+		isThirdPartyUser: boolean,
+	): Promise<User>;
+
+	public abstract deleteUser(
+		id: number
+	): Promise<void>;
 }

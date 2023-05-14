@@ -1,9 +1,10 @@
-import { Column, JoinColumn, ManyToOne, Entity } from "typeorm";
+import { Column, JoinColumn, ManyToOne, Entity, ManyToMany, Unique } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
 import { Event } from "./Event";
 
 @Entity()
+@Unique(["chassis", "plate"])
 export class Vehicle extends BaseEntity {
 	@Column()
 	brand: string;
@@ -30,7 +31,6 @@ export class Vehicle extends BaseEntity {
 	@JoinColumn()
 	owner: User;
 
-	@ManyToOne(() => Event, (event) => event.vehicle)
-	@JoinColumn()
-	event: Event;
+	@ManyToMany(() => Event, (event) => event.vehicles)
+	vehicleEvents: Event[]
 }

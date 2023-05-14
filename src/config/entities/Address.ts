@@ -28,4 +28,7 @@ export class Address extends BaseEntity {
 
 	@OneToMany(() => Event, (event) => event.address)
 	event: Event[];
+
+	@ManyToMany(() => User, (user) => user.addresses)
+	users: User[]
 }

@@ -1,6 +1,6 @@
 import { Server } from "@hapi/hapi";
 import "./config/database";
-var routes = require("./routes");
+import { routes } from "./routes";
 
 const init = async () => {
 	const server = new Server({
