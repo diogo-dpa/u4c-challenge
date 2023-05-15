@@ -3,25 +3,24 @@ import { IEventService } from "../iservices/IEventService";
 import { EventRepository } from "../repositories/EventRepository";
 
 export class EventService implements IEventService {
-	private _EventRepository: EventRepository;
+	private _eventRepository: EventRepository;
 
 	constructor(EventRepository: EventRepository) {
-		this._EventRepository = EventRepository;
+		this._eventRepository = EventRepository;
 	}
-    public saveEvent(type: string): Promise<Event> {
-        throw new Error("Method not implemented.");
-    }
-    public getAllEvent(): Promise<Event[]> {
-        throw new Error("Method not implemented.");
-    }
-    public updateEvent(id: number, updatedEvent: Event): Promise<Event> {
-        throw new Error("Method not implemented.");
-    }
-	public getEvent(id: number): Promise<Event> {
-		throw new Error("Method not implemented.");
-	}
-	public deleteEvent(id: number): Promise<Event> {
-		throw new Error("Method not implemented.");
+	public async getEvent(id: number): Promise<Event> {
+		return await this._eventRepository.getEvent(id);
 	}
 
+	public async deleteEvent(id: number): Promise<void> {
+		await this._eventRepository.deleteEvent(id);
+	}
+
+	public async saveEvent(newEvent: Event): Promise<Event> {
+		return await this._eventRepository.saveEvent(newEvent);
+	}
+
+	public async updateEvent(id: number, updatedEvent: Event): Promise<Event> {
+		return await this._eventRepository.updateEvent(id, updatedEvent);
+	}
 }

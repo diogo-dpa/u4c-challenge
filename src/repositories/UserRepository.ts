@@ -1,7 +1,8 @@
 import { User } from "../config/entities/User";
 import { IUserRepository } from "../irepositories/IUserRepository";
-import { DataSource, DeleteResult, Repository, UpdateResult } from "typeorm";
-import { AddressData, DocumentData } from "../iservices/IUserService";
+import { DataSource, Repository } from "typeorm";
+import { AddressData } from "../utils/interfaces";
+import { USER_NOT_FOUND_ERROR_MESSAGE } from "../utils/consts";
 
 export class UserRepository implements IUserRepository {
 	private _dbConnection: Repository<User>;
@@ -12,55 +13,23 @@ export class UserRepository implements IUserRepository {
 	public async getUser(id: number): Promise<User> {
 		const usersFound = await this._dbConnection.find({
 			where: {
-				id
+				id,
 			},
 			relations: {
 				document: true,
-				addresses: true
-			}
-			
-		})
-		
-		return usersFound.pop()
-	}
-
-	public async updateUser(
-		id: number, 
-		email: string, 
-		isThirdPartyUser: boolean, 
-		cellphone: string
-	): Promise<User> {
-		console.log('aqui')
-		const usersFound = await this._dbConnection.find({
-			where: {
-				id
+				addresses: true,
 			},
-			relations: {
-				document: true,
-				addresses: true
-			}
-			
-		})
+		});
 
-		
-		if (!usersFound) throw new Error('User not found')
-		const userFound = usersFound.pop()
-		console.log({userFound})
-
-		return await this._dbConnection.save({
-			...userFound,
-			email: email ?? userFound.email,
-			isThirdPartyUser: isThirdPartyUser ?? userFound.isThirdPartyUser,
-			cellphone: cellphone ?? userFound.cellphone,
-		})
+		return usersFound.pop();
 	}
 
 	public async deleteUser(id: number): Promise<void> {
 		const userFound = await this._dbConnection.findOneBy({
-			id
+			id,
 		});
 
-		if (!userFound) throw new Error('User not found')
+		if (!userFound) throw new Error(USER_NOT_FOUND_ERROR_MESSAGE);
 
 		await this._dbConnection.remove(userFound);
 	}
@@ -87,5 +56,33 @@ export class UserRepository implements IUserRepository {
 		const result = await this._dbConnection.save(userTeste);
 		console.log({ result });
 		return result;
+	}
+
+	public async updateUser(
+		id: number,
+		email: string,
+		isThirdPartyUser: boolean,
+		cellphone: string
+	): Promise<User> {
+		const usersFound = await this._dbConnection.find({
+			where: {
+				id,
+			},
+			relations: {
+				document: true,
+				addresses: true,
+			},
+		});
+
+		if (!usersFound) throw new Error(USER_NOT_FOUND_ERROR_MESSAGE);
+		const userFound = usersFound.pop();
+		console.log({ userFound });
+
+		return await this._dbConnection.save({
+			...userFound,
+			email: email ?? userFound.email,
+			isThirdPartyUser: isThirdPartyUser ?? userFound.isThirdPartyUser,
+			cellphone: cellphone ?? userFound.cellphone,
+		});
 	}
 }

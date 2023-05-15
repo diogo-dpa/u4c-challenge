@@ -1,18 +1,13 @@
 import { User } from "../config/entities/User";
-import {
-	AddressData,
-	DocumentData,
-	IUserService,
-} from "../iservices/IUserService";
+import { IUserService } from "../iservices/IUserService";
 import { UserRepository } from "../repositories/UserRepository";
+import { AddressData, DocumentData } from "../utils/interfaces";
 import { AddressService } from "./AddressService";
 import { DocumentService } from "./DocumentService";
 
 export class UserService implements IUserService {
 	private _userRepository: UserRepository;
 	private _documentService: DocumentService;
-	private _addressService: AddressService;
-
 	constructor(
 		userRepository: UserRepository,
 		documentService: DocumentService,
@@ -20,24 +15,9 @@ export class UserService implements IUserService {
 	) {
 		this._userRepository = userRepository;
 		this._documentService = documentService;
-		this._addressService = addressService;
 	}
 	public async getUser(id: number): Promise<User> {
 		return await this._userRepository.getUser(id);
-	}
-
-	public async updateUser(
-		id: number, 
-		email: string, 
-		cellphone: string,
-		isThirdPartyUser: boolean, 
-	): Promise<User> {
-		return await this._userRepository.updateUser(
-			id,
-			email,
-			isThirdPartyUser,
-			cellphone
-		);
 	}
 
 	public async deleteUser(id: number): Promise<void> {
@@ -81,5 +61,19 @@ export class UserService implements IUserService {
 			createdDocument.id
 		);
 		return result;
+	}
+
+	public async updateUser(
+		id: number,
+		email: string,
+		cellphone: string,
+		isThirdPartyUser: boolean
+	): Promise<User> {
+		return await this._userRepository.updateUser(
+			id,
+			email,
+			isThirdPartyUser,
+			cellphone
+		);
 	}
 }

@@ -3,25 +3,24 @@ import { IVehicleService } from "../iservices/IVehicleService";
 import { VehicleRepository } from "../repositories/VehicleRepository";
 
 export class VehicleService implements IVehicleService {
-	private _VehicleRepository: VehicleRepository;
+	private _vehicleRepository: VehicleRepository;
 
 	constructor(VehicleRepository: VehicleRepository) {
-		this._VehicleRepository = VehicleRepository;
+		this._vehicleRepository = VehicleRepository;
 	}
-    public saveVehicle(type: string): Promise<Vehicle> {
-        throw new Error("Method not implemented.");
-    }
-    public getAllVehicle(): Promise<Vehicle[]> {
-        throw new Error("Method not implemented.");
-    }
-    public updateVehicle(id: number, updatedVehicle: Vehicle): Promise<Vehicle> {
-        throw new Error("Method not implemented.");
-    }
-	public getVehicle(id: number): Promise<Vehicle> {
-		throw new Error("Method not implemented.");
+	public async getVehicle(id: number): Promise<Vehicle> {
+		return await this._vehicleRepository.getVehicle(id);
 	}
-	public deleteVehicle(id: number): Promise<Vehicle> {
-		throw new Error("Method not implemented.");
+	public async deleteVehicle(id: number): Promise<void> {
+		await this._vehicleRepository.deleteVehicle(id);
 	}
-
+	public async saveVehicle(newVehicle: Vehicle): Promise<Vehicle> {
+		return await this._vehicleRepository.saveVehicle(newVehicle);
+	}
+	public async updateVehicle(
+		id: number,
+		updatedVehicle: Vehicle
+	): Promise<Vehicle> {
+		return await this._vehicleRepository.updateVehicle(id, updatedVehicle);
+	}
 }

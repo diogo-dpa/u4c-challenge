@@ -1,37 +1,28 @@
 import { Request, ResponseToolkit } from "@hapi/hapi";
-import Joi from "joi";
 import { OccurenceTypeController } from "../controllers/OccurenceTypeController";
 import { OccurenceTypeRepository } from "../repositories/OccurenceTypeRepository";
 
 import { AppDataSource } from "../config/database";
 import { OccurenceTypeService } from "../services/OccurenceTypeService";
+import {
+	bodyOccurenceTypeCreateUpdateValidator,
+	generalParamsIdValidator,
+} from "./routeValidators";
 const occurenceTypeRepository = new OccurenceTypeRepository(AppDataSource);
 const occurenceTypeService = new OccurenceTypeService(occurenceTypeRepository);
 
 export const occurenceTypeRoutes = [
 	{
-		method: "POST",
-		path: "/occurenceTypes",
-		handler: (request: Request, reply: ResponseToolkit) =>
-			new OccurenceTypeController(occurenceTypeService).saveOccurenceType(request, reply),
-		options: {
-			validate: {
-				payload: Joi.object({
-					type: Joi.string().email().required(),
-				}),
-			},
-		},
-	},
-	{
 		method: "GET",
 		path: "/occurenceTypes/{id}",
 		handler: (request: Request, reply: ResponseToolkit) =>
-			new OccurenceTypeController(occurenceTypeService).getOccurenceType(request, reply),
+			new OccurenceTypeController(occurenceTypeService).getOccurenceType(
+				request,
+				reply
+			),
 		options: {
 			validate: {
-				params: Joi.object({
-                    id: Joi.string().required()
-				}),
+				params: generalParamsIdValidator(),
 			},
 		},
 	},
@@ -39,12 +30,27 @@ export const occurenceTypeRoutes = [
 		method: "DELETE",
 		path: "/OccurenceTypes/{id}",
 		handler: (request: Request, reply: ResponseToolkit) =>
-			new OccurenceTypeController(occurenceTypeService).getOccurenceType(request, reply),
+			new OccurenceTypeController(occurenceTypeService).deleteOccurenceType(
+				request,
+				reply
+			),
 		options: {
 			validate: {
-				params: Joi.object({
-                    id: Joi.string().required()
-				}),
+				params: generalParamsIdValidator(),
+			},
+		},
+	},
+	{
+		method: "POST",
+		path: "/occurenceTypes",
+		handler: (request: Request, reply: ResponseToolkit) =>
+			new OccurenceTypeController(occurenceTypeService).saveOccurenceType(
+				request,
+				reply
+			),
+		options: {
+			validate: {
+				payload: bodyOccurenceTypeCreateUpdateValidator(),
 			},
 		},
 	},
@@ -52,15 +58,14 @@ export const occurenceTypeRoutes = [
 		method: "PUT",
 		path: "/OccurenceTypes/{id}",
 		handler: (request: Request, reply: ResponseToolkit) =>
-			new OccurenceTypeController(occurenceTypeService).deleteOccurenceType(request, reply),
+			new OccurenceTypeController(occurenceTypeService).updateOccurenceType(
+				request,
+				reply
+			),
 		options: {
 			validate: {
-				params: Joi.object({
-                    id: Joi.string().required()
-				}),
-				payload: Joi.object({
-					type: Joi.string().email().required(),
-				}).required(),
+				params: generalParamsIdValidator(),
+				payload: bodyOccurenceTypeCreateUpdateValidator(),
 			},
 		},
 	},

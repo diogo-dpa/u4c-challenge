@@ -11,9 +11,6 @@ export class DocumentRepository implements IDocumentRepository {
 	public getDocument(id: number): Promise<Document> {
 		throw new Error("Method not implemented.");
 	}
-	public updateDocument(id: number, updatedDocument?: string): Promise<Document> {
-		throw new Error("Method not implemented.");
-	}
 	public deleteDocument(id: number): Promise<Document> {
 		throw new Error("Method not implemented.");
 	}
@@ -27,5 +24,11 @@ export class DocumentRepository implements IDocumentRepository {
 		} as any;
 		const result = await this._dbConnection.save(DocumentTeste);
 		return result;
+	}
+	public updateDocument(
+		id: number,
+		updatedDocument?: string
+	): Promise<Document> {
+		throw new Error("Method not implemented.");
 	}
 }

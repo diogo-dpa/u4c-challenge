@@ -11,10 +11,13 @@ export class DocumentService implements IDocumentService {
 	public getDocument(id: number): Promise<Document> {
 		throw new Error("Method not implemented.");
 	}
-	public updateDocument(id: number, updatedDocument?: string): Promise<Document> {
+	public deleteDocument(id: number): Promise<Document> {
 		throw new Error("Method not implemented.");
 	}
-	public deleteDocument(id: number): Promise<Document> {
+	public updateDocument(
+		id: number,
+		updatedDocument?: string
+	): Promise<Document> {
 		throw new Error("Method not implemented.");
 	}
 

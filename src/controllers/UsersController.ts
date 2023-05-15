@@ -1,6 +1,12 @@
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import { UserService } from "../services/UserService";
 import { ResponseHandler } from "./utils";
+import {
+	SUCCESS_CREATED_MESSAGE,
+	SUCCESS_DELETED_MESSAGE,
+	SUCCESS_GET_MESSAGE,
+	SUCCESS_UPDATED_MESSAGE,
+} from "../utils/consts";
 
 export class UserController {
 	private _userService: UserService;
@@ -8,19 +14,46 @@ export class UserController {
 		this._userService = userService;
 	}
 
-	async saveUser(request: Request, reply: ResponseToolkit) {
-		const {
-			fullName,
-			birthDate,
-			email,
-			cellphone,
-			isThirdPartyUser,
-			documents,
-			address,
-		} = request.payload as any;
-
+	async getUser(request: Request, reply: ResponseToolkit) {
 		try {
-			if (fullName?.includes('1')) throw new Error('Invalid parameters')
+			const { id } = request.params;
+			const result = await this._userService.getUser(id);
+
+			return ResponseHandler.successResponse(
+				reply,
+				SUCCESS_GET_MESSAGE,
+				result
+			);
+		} catch (err) {
+			return ResponseHandler.errorResponse(reply, err.message);
+		}
+	}
+
+	async deleteUser(request: Request, reply: ResponseToolkit) {
+		try {
+			const { id } = request.params;
+			await this._userService.deleteUser(id);
+
+			return ResponseHandler.successResponse(reply, SUCCESS_DELETED_MESSAGE);
+		} catch (err) {
+			return ResponseHandler.errorResponse(reply, err.message);
+		}
+	}
+
+	async saveUser(request: Request, reply: ResponseToolkit) {
+		try {
+			const {
+				fullName,
+				birthDate,
+				email,
+				cellphone,
+				isThirdPartyUser,
+				documents,
+				address,
+			} = request.payload as any;
+
+			if (fullName?.includes("1")) throw new Error("Invalid parameters");
+			// Validations
 
 			const result = await this._userService.saveUser(
 				fullName,
@@ -32,74 +65,35 @@ export class UserController {
 				address
 			);
 
-			return ResponseHandler.successResponse(reply, 'ok', result);
-
-		} catch(err) {
-			return ResponseHandler.errorResponse(reply, err.message)
+			return ResponseHandler.successResponse(
+				reply,
+				SUCCESS_CREATED_MESSAGE,
+				result
+			);
+		} catch (err) {
+			return ResponseHandler.errorResponse(reply, err.message);
 		}
 	}
 
-	async updateUser(request: Request, reply: ResponseToolkit){
-		const {
-			email,
-			cellphone,
-			isThirdPartyUser
-		} = request.payload as any;
-
+	async updateUser(request: Request, reply: ResponseToolkit) {
 		try {
-			const { id } = request.params
-	
+			const { email, cellphone, isThirdPartyUser } = request.payload as any;
+			const { id } = request.params;
+
 			const updatedUser = await this._userService.updateUser(
 				id,
 				email,
 				cellphone,
 				isThirdPartyUser
 			);
-	
+
 			return ResponseHandler.successResponse(
 				reply,
-				"Success updated",
+				SUCCESS_UPDATED_MESSAGE,
 				updatedUser
-			)
-		} catch (err) {
-			return ResponseHandler.errorResponse(reply, err.message)
-		}
-
-	}
-
-	async getUser(request: Request, reply: ResponseToolkit){
-		const { id } = request.params
-
-		try {
-			const result = await this._userService.getUser(
-				id
 			);
-	
-			return ResponseHandler.successResponse(
-				reply,
-				'ok',
-				result
-			) 
 		} catch (err) {
-			return ResponseHandler.errorResponse(reply, err.message)
+			return ResponseHandler.errorResponse(reply, err.message);
 		}
-	}
-
-	async deleteUser(request: Request, reply: ResponseToolkit){
-		const { id } = request.params
-
-		try {
-			await this._userService.deleteUser(
-				id
-			);
-	
-			return ResponseHandler.successResponse(
-				reply,
-				"Success deleted"
-			) 
-		} catch (err) {
-			return ResponseHandler.errorResponse(reply, err.message)
-		}
-
 	}
 }

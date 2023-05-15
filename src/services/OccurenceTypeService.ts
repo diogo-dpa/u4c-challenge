@@ -3,25 +3,27 @@ import { IOccurenceTypeService } from "../iservices/IOccurenceTypeService";
 import { OccurenceTypeRepository } from "../repositories/OccurenceTypeRepository";
 
 export class OccurenceTypeService implements IOccurenceTypeService {
-	private _OccurenceTypeRepository: OccurenceTypeRepository;
+	private _occurenceTypeRepository: OccurenceTypeRepository;
 
 	constructor(OccurenceTypeRepository: OccurenceTypeRepository) {
-		this._OccurenceTypeRepository = OccurenceTypeRepository;
+		this._occurenceTypeRepository = OccurenceTypeRepository;
 	}
-    public saveOccurenceType(type: string): Promise<OccurenceType> {
-        throw new Error("Method not implemented.");
-    }
-    public getAllOccurenceType(): Promise<OccurenceType[]> {
-        throw new Error("Method not implemented.");
-    }
-    public updateOccurenceType(id: number, updatedOccurenceType: OccurenceType): Promise<OccurenceType> {
-        throw new Error("Method not implemented.");
-    }
-	public getOccurenceType(id: number): Promise<OccurenceType> {
-		throw new Error("Method not implemented.");
+	public async getOccurenceType(id: number): Promise<OccurenceType> {
+		return await this._occurenceTypeRepository.getOccurenceType(id);
 	}
-	public deleteOccurenceType(id: number): Promise<OccurenceType> {
-		throw new Error("Method not implemented.");
+	public async deleteOccurenceType(id: number): Promise<void> {
+		await this._occurenceTypeRepository.deleteOccurenceType(id);
 	}
-
+	public async saveOccurenceType(type: string): Promise<OccurenceType> {
+		return await this._occurenceTypeRepository.saveOccurenceType(type);
+	}
+	public async updateOccurenceType(
+		id: number,
+		updatedOccurenceType: string
+	): Promise<string> {
+		return await this._occurenceTypeRepository.updateOccurenceType(
+			id,
+			updatedOccurenceType
+		);
+	}
 }
