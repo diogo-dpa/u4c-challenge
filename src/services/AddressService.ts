@@ -8,14 +8,11 @@ export class AddressService implements IAddressService {
 	constructor(AddressRepository: AddressRepository) {
 		this._addressRepository = AddressRepository;
 	}
-	public getAddress(id: number): Promise<Address> {
-		throw new Error("Method not implemented.");
+	public async getAddress(id: number): Promise<Address> {
+		return await this._addressRepository.getAddress(id);
 	}
-	public updateAddress(id: number, zipcode?: string, street?: string, number?: number, state?: string, country?: string, neighborhood?: string, complement?: string): Promise<Address> {
-		throw new Error("Method not implemented.");
-	}
-	public deleteAddress(id: number): Promise<Address> {
-		throw new Error("Method not implemented.");
+	public async deleteAddress(id: number): Promise<void> {
+		await this._addressRepository.deleteAddress(id);
 	}
 
 	async saveAddress(

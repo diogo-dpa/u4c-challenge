@@ -2,6 +2,7 @@ export interface DocumentData {
 	rg: string;
 	cpf: string;
 	cnh: string;
+	passport?: string;
 }
 
 export interface AddressData {

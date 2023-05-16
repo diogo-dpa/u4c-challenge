@@ -5,14 +5,14 @@ import { UserRepository } from "../repositories/UserRepository";
 import { AppDataSource } from "../config/database";
 import { DocumentRepository } from "../repositories/DocumentRepository";
 import { DocumentService } from "../services/DocumentService";
-import { AddressRepository } from "../repositories/AddressRepository";
-import { AddressService } from "../services/AddressService";
 import {
 	bodyUserCreateValidator,
 	bodyUserUpdateValidator,
 	generalParamsIdValidator,
 } from "./routeValidators";
 import { BaseRoutes } from "./BaseRoutes";
+import { AddressRepository } from "../repositories/AddressRepository";
+import { AddressService } from "../services/AddressService";
 
 export class UserRoutes implements BaseRoutes {
 	private _userController: UserController;
@@ -20,8 +20,8 @@ export class UserRoutes implements BaseRoutes {
 	constructor() {
 		const userRepository = new UserRepository(AppDataSource);
 		const documentRepository = new DocumentRepository(AppDataSource);
-		const documentService = new DocumentService(documentRepository);
 		const addressRepository = new AddressRepository(AppDataSource);
+		const documentService = new DocumentService(documentRepository);
 		const addressService = new AddressService(addressRepository);
 		const userService = new UserService(
 			userRepository,

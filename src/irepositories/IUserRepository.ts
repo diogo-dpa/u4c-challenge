@@ -14,10 +14,5 @@ export abstract class IUserRepository {
 		document: number
 	): Promise<User>;
 
-	public abstract updateUser(
-		id: number,
-		email: string,
-		isThirdPartyUser: boolean,
-		cellphone: string
-	): Promise<User>;
+	public abstract updateUser(id: number, newUserData: User): Promise<User>;
 }

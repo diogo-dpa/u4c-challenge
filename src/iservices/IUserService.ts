@@ -13,10 +13,5 @@ export abstract class IUserService {
 		documentData: DocumentData,
 		addressData: AddressData
 	): Promise<User>;
-	public abstract updateUser(
-		id: number,
-		email: string,
-		cellphone: string,
-		isThirdPartyUser: boolean
-	): Promise<User>;
+	public abstract updateUser(id: number, newUserData: User): Promise<User>;
 }

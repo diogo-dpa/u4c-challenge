@@ -1,6 +1,7 @@
 import { Document } from "../config/entities/Document";
 import { IDocumentRepository } from "../irepositories/IDocumentRepository";
 import { DataSource, Repository } from "typeorm";
+import { DOCUMENT_NOT_FOUND_ERROR_MESSAGE } from "../utils/consts";
 
 export class DocumentRepository implements IDocumentRepository {
 	private _dbConnection: Repository<Document>;
@@ -8,27 +9,29 @@ export class DocumentRepository implements IDocumentRepository {
 	constructor(dbConnection: DataSource) {
 		this._dbConnection = dbConnection.getRepository(Document);
 	}
-	public getDocument(id: number): Promise<Document> {
-		throw new Error("Method not implemented.");
-	}
-	public deleteDocument(id: number): Promise<Document> {
-		throw new Error("Method not implemented.");
+
+	async deleteDocument(id: number): Promise<void> {
+		const documentFound = await this._dbConnection.findOneBy({
+			id,
+		});
+
+		if (!documentFound) throw new Error(DOCUMENT_NOT_FOUND_ERROR_MESSAGE);
+
+		await this._dbConnection.remove(documentFound);
 	}
 
-	async saveDocument(rg: string, cpf: string, cnh: string): Promise<Document> {
+	async saveDocument(
+		rg: string,
+		cpf: string,
+		cnh: string,
+		passport?: string
+	): Promise<Document> {
 		const DocumentTeste = {
 			rg,
 			cpf,
 			cnh,
-			passport: "",
+			passport: passport ?? "",
 		} as any;
-		const result = await this._dbConnection.save(DocumentTeste);
-		return result;
-	}
-	public updateDocument(
-		id: number,
-		updatedDocument?: string
-	): Promise<Document> {
-		throw new Error("Method not implemented.");
+		return await this._dbConnection.save(DocumentTeste);
 	}
 }

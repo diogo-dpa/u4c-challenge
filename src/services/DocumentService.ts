@@ -8,21 +8,23 @@ export class DocumentService implements IDocumentService {
 	constructor(documentRepository: DocumentRepository) {
 		this._documentRepository = documentRepository;
 	}
-	public getDocument(id: number): Promise<Document> {
-		throw new Error("Method not implemented.");
-	}
-	public deleteDocument(id: number): Promise<Document> {
-		throw new Error("Method not implemented.");
-	}
-	public updateDocument(
-		id: number,
-		updatedDocument?: string
-	): Promise<Document> {
-		throw new Error("Method not implemented.");
+
+	public async deleteDocument(id: number): Promise<void> {
+		await this._documentRepository.deleteDocument(id);
 	}
 
-	async saveDocument(rg: string, cpf: string, cnh: string): Promise<Document> {
-		const result = await this._documentRepository.saveDocument(rg, cpf, cnh);
+	async saveDocument(
+		rg: string,
+		cpf: string,
+		cnh: string,
+		passport?: string
+	): Promise<Document> {
+		const result = await this._documentRepository.saveDocument(
+			rg,
+			cpf,
+			cnh,
+			passport
+		);
 		return result;
 	}
 }

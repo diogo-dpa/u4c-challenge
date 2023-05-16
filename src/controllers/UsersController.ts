@@ -52,9 +52,6 @@ export class UserController {
 				address,
 			} = request.payload as any;
 
-			if (fullName?.includes("1")) throw new Error("Invalid parameters");
-			// Validations
-
 			const result = await this._userService.saveUser(
 				fullName,
 				birthDate,
@@ -77,15 +74,24 @@ export class UserController {
 
 	async updateUser(request: Request, reply: ResponseToolkit) {
 		try {
-			const { email, cellphone, isThirdPartyUser } = request.payload as any;
-			const { id } = request.params;
-
-			const updatedUser = await this._userService.updateUser(
-				id,
+			const {
+				fullName,
+				birthDate,
 				email,
 				cellphone,
-				isThirdPartyUser
-			);
+				isThirdPartyUser,
+				address,
+			} = request.payload as any;
+			const { id } = request.params;
+
+			const updatedUser = await this._userService.updateUser(id, {
+				fullName,
+				birthDate,
+				email,
+				cellphone,
+				isThirdPartyUser,
+				addresses: [address],
+			} as any);
 
 			return ResponseHandler.successResponse(
 				reply,

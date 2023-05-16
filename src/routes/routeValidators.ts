@@ -26,9 +26,21 @@ export const bodyUserCreateValidator = () =>
 
 export const bodyUserUpdateValidator = () =>
 	Joi.object({
+		fullName: Joi.string().optional().min(2).max(10),
+		birthDate: Joi.string().optional(),
 		email: Joi.string().email().optional(),
 		cellphone: Joi.string().optional(),
 		isThirdPartyUser: Joi.boolean().optional(),
+		address: Joi.object({
+			id: Joi.number().optional(),
+			zipcode: Joi.string().optional().min(8).max(8),
+			street: Joi.string().optional().min(5).max(50),
+			number: Joi.number().optional(),
+			complement: Joi.string().optional().max(50),
+			state: Joi.string().optional().min(2).max(50),
+			country: Joi.string().optional().min(4).max(50),
+			neighborhood: Joi.string().optional().min(2).max(50),
+		}).optional(),
 	});
 
 export const bodyEventCreateValidator = () =>

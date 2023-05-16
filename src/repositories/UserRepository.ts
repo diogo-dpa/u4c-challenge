@@ -53,17 +53,12 @@ export class UserRepository implements IUserRepository {
 			document,
 		} as any;
 
-		const result = await this._dbConnection.save(userTeste);
-		console.log({ result });
-		return result;
+		return await this._dbConnection.save(userTeste);
 	}
 
-	public async updateUser(
-		id: number,
-		email: string,
-		isThirdPartyUser: boolean,
-		cellphone: string
-	): Promise<User> {
+	public async updateUser(id: number, newUserData: User): Promise<User> {
+		const { email, isThirdPartyUser, cellphone, addresses } = newUserData;
+
 		const usersFound = await this._dbConnection.find({
 			where: {
 				id,
@@ -76,13 +71,13 @@ export class UserRepository implements IUserRepository {
 
 		if (!usersFound) throw new Error(USER_NOT_FOUND_ERROR_MESSAGE);
 		const userFound = usersFound.pop();
-		console.log({ userFound });
 
 		return await this._dbConnection.save({
 			...userFound,
 			email: email ?? userFound.email,
 			isThirdPartyUser: isThirdPartyUser ?? userFound.isThirdPartyUser,
 			cellphone: cellphone ?? userFound.cellphone,
+			addresses: [...addresses] ?? userFound.addresses,
 		});
 	}
 }
