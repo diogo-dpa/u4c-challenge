@@ -34,21 +34,22 @@ export class User extends BaseEntity {
 
 	@ManyToMany(() => Address, (address) => address.users, {
 		cascade: true,
-        eager: true,
-    })
+		eager: true,
+		onDelete: "CASCADE",
+	})
 	@JoinTable()
 	addresses: Address[];
 
-	@OneToMany(() => Vehicle, (vehicle) => vehicle.owner)
+	@OneToMany(() => Vehicle, (vehicle) => vehicle.owner, { onDelete: "CASCADE" })
 	vehicle: Vehicle[];
 
-	@OneToOne(() => Document)
+	@OneToOne(() => Document, { eager: true, onDelete: "CASCADE" })
 	@JoinColumn()
 	document: Document;
 
 	@ManyToMany(() => Event, (event) => event.client)
-	clientEvents: Event[]
+	clientEvents: Event[];
 
 	@ManyToMany(() => Event, (event) => event.thirdPartyUser)
-	thirdPartyUserEvents: Event[]
+	thirdPartyUserEvents: Event[];
 }

@@ -29,6 +29,6 @@ export class Address extends BaseEntity {
 	@OneToMany(() => Event, (event) => event.address)
 	event: Event[];
 
-	@ManyToMany(() => User, (user) => user.addresses)
-	users: User[]
+	@ManyToMany(() => User, (user) => user.addresses, { onDelete: "CASCADE" })
+	users: User[];
 }

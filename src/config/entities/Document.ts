@@ -1,5 +1,6 @@
-import { Column, Entity, Unique } from "typeorm";
+import { Column, Entity, OneToOne, Unique } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
+import { User } from "./User";
 
 @Entity()
 @Unique(["rg", "cpf", "cnh", "passport"])
@@ -15,4 +16,7 @@ export class Document extends BaseEntity {
 
 	@Column()
 	passport: string;
+
+	@OneToOne(() => User, (user) => user.document, { onDelete: "CASCADE" })
+	user: User;
 }

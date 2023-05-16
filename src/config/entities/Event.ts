@@ -18,22 +18,26 @@ import { Address } from "./Address";
 export class Event extends BaseEntity {
 	@ManyToMany(() => User, (client) => client.clientEvents, {
 		cascade: true,
-        eager: true,
-    })
+		eager: true,
+	})
 	@JoinTable()
 	client: User[];
 
-	@ManyToMany(() => User, (thirrdPartyUser) => thirrdPartyUser.thirdPartyUserEvents, {
-		cascade: true,
-        eager: true,
-    })
+	@ManyToMany(
+		() => User,
+		(thirrdPartyUser) => thirrdPartyUser.thirdPartyUserEvents,
+		{
+			cascade: true,
+			eager: true,
+		}
+	)
 	@JoinTable()
 	thirdPartyUser: User[];
 
 	@ManyToMany(() => Vehicle, (vehicle) => vehicle.vehicleEvents, {
 		cascade: true,
-        eager: true,
-    })
+		eager: true,
+	})
 	@JoinTable()
 	vehicles: Vehicle[];
 
@@ -41,7 +45,7 @@ export class Event extends BaseEntity {
 	@JoinColumn()
 	occurenceType: OccurenceType;
 
-	@ManyToOne(() => Address, (address) => address.event)
+	@ManyToOne(() => Address, (address) => address.event, { onDelete: "CASCADE" })
 	@JoinColumn()
 	address: Address;
 
