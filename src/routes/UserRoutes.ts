@@ -12,8 +12,9 @@ import {
 	bodyUserUpdateValidator,
 	generalParamsIdValidator,
 } from "./routeValidators";
+import { BaseRoutes } from "./BaseRoutes";
 
-export class UserRoutes {
+export class UserRoutes implements BaseRoutes {
 	private _userController: UserController;
 
 	constructor() {

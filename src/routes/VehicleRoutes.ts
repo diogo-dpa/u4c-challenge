@@ -1,7 +1,6 @@
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import { VehicleController } from "../controllers/VehicleController";
 import { VehicleRepository } from "../repositories/VehicleRepository";
-
 import { AppDataSource } from "../config/database";
 import { VehicleService } from "../services/VehicleService";
 import {
@@ -9,53 +8,76 @@ import {
 	bodyVehicleUpdateValidator,
 	generalParamsIdValidator,
 } from "./routeValidators";
-const vehicleRepository = new VehicleRepository(AppDataSource);
-const vehicleService = new VehicleService(vehicleRepository);
+import { BaseRoutes } from "./BaseRoutes";
 
-export const vehicleRoutes = [
-	{
-		method: "GET",
-		path: "/Vehicles/{id}",
-		handler: (request: Request, reply: ResponseToolkit) =>
-			new VehicleController(vehicleService).getVehicle(request, reply),
-		options: {
-			validate: {
-				params: generalParamsIdValidator(),
+export class VehicleRoutes implements BaseRoutes {
+	private _vehicleController: VehicleController;
+
+	constructor() {
+		const vehicleRepository = new VehicleRepository(AppDataSource);
+		const vehicleService = new VehicleService(vehicleRepository);
+
+		this._vehicleController = new VehicleController(vehicleService);
+	}
+
+	private getSpecific() {
+		return {
+			method: "GET",
+			path: "/Vehicles/{id}",
+			handler: (request: Request, reply: ResponseToolkit) =>
+				this._vehicleController.getVehicle(request, reply),
+			options: {
+				validate: {
+					params: generalParamsIdValidator(),
+				},
 			},
-		},
-	},
-	{
-		method: "DELETE",
-		path: "/Vehicles/{id}",
-		handler: (request: Request, reply: ResponseToolkit) =>
-			new VehicleController(vehicleService).deleteVehicle(request, reply),
-		options: {
-			validate: {
-				params: generalParamsIdValidator(),
+		};
+	}
+
+	private delete() {
+		return {
+			method: "DELETE",
+			path: "/Vehicles/{id}",
+			handler: (request: Request, reply: ResponseToolkit) =>
+				this._vehicleController.deleteVehicle(request, reply),
+			options: {
+				validate: {
+					params: generalParamsIdValidator(),
+				},
 			},
-		},
-	},
-	{
-		method: "POST",
-		path: "/vehicles",
-		handler: (request: Request, reply: ResponseToolkit) =>
-			new VehicleController(vehicleService).saveVehicle(request, reply),
-		options: {
-			validate: {
-				payload: bodyVehicleCreateValidator(),
+		};
+	}
+
+	private post() {
+		return {
+			method: "POST",
+			path: "/vehicles",
+			handler: (request: Request, reply: ResponseToolkit) =>
+				this._vehicleController.saveVehicle(request, reply),
+			options: {
+				validate: {
+					payload: bodyVehicleCreateValidator(),
+				},
 			},
-		},
-	},
-	{
-		method: "PUT",
-		path: "/Vehicles/{id}",
-		handler: (request: Request, reply: ResponseToolkit) =>
-			new VehicleController(vehicleService).updateVehicle(request, reply),
-		options: {
-			validate: {
-				params: generalParamsIdValidator(),
-				payload: bodyVehicleUpdateValidator(),
+		};
+	}
+
+	private update() {
+		return {
+			method: "PUT",
+			path: "/Vehicles/{id}",
+			handler: (request: Request, reply: ResponseToolkit) =>
+				this._vehicleController.updateVehicle(request, reply),
+			options: {
+				validate: {
+					params: generalParamsIdValidator(),
+					payload: bodyVehicleUpdateValidator(),
+				},
 			},
-		},
-	},
-];
+		};
+	}
+
+	public returnDomainRoutes() {
+		return [this.post(), this.getSpecific(), this.delete(), this.update()];
+	}
+}
