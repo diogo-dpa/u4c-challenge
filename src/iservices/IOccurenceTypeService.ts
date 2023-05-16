@@ -5,8 +5,4 @@ export abstract class IOccurenceTypeService {
 
 	public abstract deleteOccurenceType(id: number): Promise<void>;
 	public abstract saveOccurenceType(type: string): Promise<OccurenceType>;
-	public abstract updateOccurenceType(
-		id: number,
-		updatedOccurenceType: string
-	): Promise<string>;
 }
