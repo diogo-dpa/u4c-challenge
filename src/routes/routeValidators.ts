@@ -106,26 +106,26 @@ export const bodyOccurenceTypeCreateUpdateValidator = () =>
 
 export const bodyVehicleCreateValidator = () =>
 	Joi.object({
-		brand: Joi.string().min(2).max(10),
-		model: Joi.string().isoDate().required(),
-		fabricationYear: Joi.string().email().required(),
-		modelYear: Joi.string().optional(),
-		chassis: Joi.string().email().required(),
-		plate: Joi.string().email().required(),
-		mileage: Joi.string().email().required(),
-		ownerId: Joi.string().email().required(),
+		brand: Joi.string().min(2).max(10).required(),
+		model: Joi.string().min(2).max(10).required(),
+		fabricationYear: Joi.number().required(),
+		modelYear: Joi.number().required(),
+		chassis: Joi.string().min(17).max(17).required(),
+		plate: Joi.string().min(7).max(7).required(),
+		mileage: Joi.number().required(),
+		owner: Joi.string().required(),
 	});
 
 export const bodyVehicleUpdateValidator = () =>
 	Joi.object({
 		brand: Joi.string().min(2).max(10).optional(),
-		model: Joi.string().isoDate().optional(),
-		fabricationYear: Joi.string().email().optional(),
-		modelYear: Joi.string().optional(),
-		chassis: Joi.string().email().optional(),
-		plate: Joi.string().email().optional(),
-		mileage: Joi.string().email().optional(),
-		ownerId: Joi.string().email().optional(),
+		model: Joi.string().min(2).max(10).optional(),
+		fabricationYear: Joi.number().optional(),
+		modelYear: Joi.number().optional(),
+		chassis: Joi.string().min(17).max(17).optional(),
+		plate: Joi.string().min(7).max(7).optional(),
+		mileage: Joi.number().optional(),
+		ownerId: Joi.string().optional(),
 	});
 
 export const generalParamsIdValidator = () =>

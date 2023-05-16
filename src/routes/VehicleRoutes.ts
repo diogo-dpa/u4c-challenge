@@ -23,7 +23,7 @@ export class VehicleRoutes implements BaseRoutes {
 	private getSpecific() {
 		return {
 			method: "GET",
-			path: "/Vehicles/{id}",
+			path: "/vehicles/{id}",
 			handler: (request: Request, reply: ResponseToolkit) =>
 				this._vehicleController.getVehicle(request, reply),
 			options: {
@@ -37,7 +37,7 @@ export class VehicleRoutes implements BaseRoutes {
 	private delete() {
 		return {
 			method: "DELETE",
-			path: "/Vehicles/{id}",
+			path: "/vehicles/{id}",
 			handler: (request: Request, reply: ResponseToolkit) =>
 				this._vehicleController.deleteVehicle(request, reply),
 			options: {
@@ -65,7 +65,7 @@ export class VehicleRoutes implements BaseRoutes {
 	private update() {
 		return {
 			method: "PUT",
-			path: "/Vehicles/{id}",
+			path: "/vehicles/{id}",
 			handler: (request: Request, reply: ResponseToolkit) =>
 				this._vehicleController.updateVehicle(request, reply),
 			options: {

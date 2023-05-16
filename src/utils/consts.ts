@@ -7,5 +7,7 @@ export const EVENT_NOT_FOUND_ERROR_MESSAGE = "Event not found";
 export const OCCURENCE_TYPE_NOT_FOUND_ERROR_MESSAGE =
 	"Occurence Type not found";
 export const VEHICLE_NOT_FOUND_ERROR_MESSAGE = "Vehicle not found";
+export const FIELD_DOES_NOT_ALLOWED_UPDATE_ERROR_MESSAGE =
+	"Field does not allowed to update";
 export const OCCURENCE_TYPE_NOT_EXISTS_ERROR_MESSAGE =
 	"Occurence Type does not exists.";

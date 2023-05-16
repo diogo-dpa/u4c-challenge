@@ -31,25 +31,13 @@ export class VehicleRepository implements IVehicleRepository {
 		await this._dbConnection.remove(vehicleFound);
 	}
 	public async saveVehicle(newVehicle: Vehicle): Promise<Vehicle> {
-		// const userTeste = {
-		// 	fullName,
-		// 	birthDate,
-		// 	email,
-		// 	isThirdPartyUser,
-		// 	cellphone,
-		// 	addresses: [address],
-		// 	document,
-		// } as any;
-
-		const result = await this._dbConnection.save(newVehicle);
-		console.log({ result });
-		return result;
+		return await this._dbConnection.save(newVehicle);
 	}
 	public async updateVehicle(
 		id: number,
 		updatedVehicle: Vehicle
 	): Promise<Vehicle> {
-		const { brand, chassis, fabricationYear, mileage, model, modelYear } =
+		const { brand, fabricationYear, mileage, model, modelYear, plate } =
 			updatedVehicle;
 
 		const vehiclesFound = await this._dbConnection.find({
@@ -61,18 +49,17 @@ export class VehicleRepository implements IVehicleRepository {
 			},
 		});
 
-		if (!vehiclesFound) throw new Error(VEHICLE_NOT_FOUND_ERROR_MESSAGE);
 		const vehicleFound = vehiclesFound.pop();
-		console.log({ userFound: vehicleFound });
+		if (!vehicleFound) throw new Error(VEHICLE_NOT_FOUND_ERROR_MESSAGE);
 
 		return await this._dbConnection.save({
 			...vehicleFound,
 			brand: brand ?? vehicleFound.brand,
-			chassis: chassis ?? vehicleFound.chassis,
 			fabricationYear: fabricationYear ?? vehicleFound.fabricationYear,
 			mileage: mileage ?? vehicleFound.mileage,
 			model: model ?? vehicleFound.model,
 			modelYear: modelYear ?? vehicleFound.modelYear,
+			plate: plate ?? vehicleFound.plate,
 		});
 	}
 }

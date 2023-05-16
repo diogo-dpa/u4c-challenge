@@ -18,7 +18,6 @@ export class VehicleController {
 			const { id } = request.params;
 
 			const result = await this._vehicleService.getVehicle(id);
-			console.log({ result });
 
 			return ResponseHandler.successResponse(
 				reply,
@@ -34,8 +33,7 @@ export class VehicleController {
 		try {
 			const { id } = request.params;
 
-			const result = await this._vehicleService.deleteVehicle(id);
-			console.log({ result });
+			await this._vehicleService.deleteVehicle(id);
 
 			return ResponseHandler.successResponse(reply, SUCCESS_DELETED_MESSAGE);
 		} catch (err) {
@@ -45,10 +43,27 @@ export class VehicleController {
 
 	async saveVehicle(request: Request, reply: ResponseToolkit) {
 		try {
-			const { type } = request.payload as any;
+			const {
+				brand,
+				model,
+				fabricationYear,
+				modelYear,
+				chassis,
+				plate,
+				mileage,
+				owner,
+			} = request.payload as any;
 
-			const result = await this._vehicleService.saveVehicle(type);
-			console.log({ result });
+			const result = await this._vehicleService.saveVehicle({
+				brand,
+				model,
+				fabricationYear,
+				modelYear,
+				chassis,
+				plate,
+				mileage,
+				owner,
+			} as any);
 
 			return ResponseHandler.successResponse(
 				reply,
@@ -62,12 +77,29 @@ export class VehicleController {
 
 	async updateVehicle(request: Request, reply: ResponseToolkit) {
 		try {
-			const { type } = request.payload as any;
+			const {
+				brand,
+				model,
+				fabricationYear,
+				modelYear,
+				chassis,
+				plate,
+				mileage,
+				owner,
+			} = request.payload as any;
 
 			const { id } = request.params;
 
-			const updatedVehicle = await this._vehicleService.updateVehicle(id, type);
-			console.log({ updatedVehicle });
+			const updatedVehicle = await this._vehicleService.updateVehicle(id, {
+				brand,
+				model,
+				fabricationYear,
+				modelYear,
+				chassis,
+				plate,
+				mileage,
+				owner,
+			} as any);
 
 			return ResponseHandler.successResponse(
 				reply,
