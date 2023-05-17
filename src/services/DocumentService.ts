@@ -8,6 +8,9 @@ export class DocumentService implements IDocumentService {
 	constructor(documentRepository: DocumentRepository) {
 		this._documentRepository = documentRepository;
 	}
+	public async getDocumentByCPF(cpf: string): Promise<Document> {
+		return await this._documentRepository.getDocumentByCPF(cpf);
+	}
 
 	public async deleteDocument(id: number): Promise<void> {
 		await this._documentRepository.deleteDocument(id);

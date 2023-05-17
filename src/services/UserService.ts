@@ -63,23 +63,42 @@ export class UserService implements IUserService {
 	): Promise<User> {
 		const { cpf, rg, cnh, passport } = documentData;
 
-		const createdDocument = await this._documentService.saveDocument(
-			rg,
-			cpf,
-			cnh,
-			passport
+		const existsUserByDocument = await this._documentService.getDocumentByCPF(
+			documentData.cpf
 		);
 
-		const result = await this._userRepository.saveUser(
-			fullName,
-			birthDate,
-			email,
-			cellphone,
-			isThirdPartyUser,
-			addressData,
-			createdDocument.id
-		);
-		return result;
+		let userResult = {} as User;
+
+		if (
+			existsUserByDocument?.user?.id &&
+			existsUserByDocument?.user?.isThirdPartyUser
+		) {
+			userResult = await this._userRepository.updateUser(
+				existsUserByDocument.user.id,
+				{
+					isThirdPartyUser: false,
+				}
+			);
+		} else {
+			const createdDocument = await this._documentService.saveDocument(
+				rg,
+				cpf,
+				cnh,
+				passport
+			);
+
+			userResult = await this._userRepository.saveUser(
+				fullName,
+				birthDate,
+				email,
+				cellphone,
+				isThirdPartyUser,
+				addressData,
+				createdDocument.id
+			);
+		}
+
+		return userResult;
 	}
 
 	public async updateUser(id: number, newUserData: User): Promise<User> {
@@ -94,7 +113,6 @@ export class UserService implements IUserService {
 
 		if (addresses.length > 0) {
 			const a = addresses.map((add) => Object.entries(add));
-			console.log({ a });
 			if (
 				addresses
 					.map((add) =>
@@ -106,17 +124,25 @@ export class UserService implements IUserService {
 			)
 				throw Error(INVALID_ADDRESS_ID_ERROR_MESSAGE);
 
-			const addressesFound = await this._addressService.getAddress(
-				addresses[0].id
+			const addressFoundPromises = addresses.map((x) =>
+				this._addressService.getAddress(x.id)
 			);
-			const newAddressUpdated = {
-				...addressesFound,
-				...addresses[0],
-			};
+
+			const addressFoundResult = await Promise.all([...addressFoundPromises]);
+
+			const updatedAddresses = addresses.map((o) => {
+				const completeDataAddressFound = addressFoundResult.find(
+					(x) => x.id === o.id
+				);
+				return {
+					...o,
+					...completeDataAddressFound,
+				};
+			});
 
 			userData = {
 				...newUserData,
-				addresses: [newAddressUpdated],
+				addresses: [...updatedAddresses],
 			};
 		}
 
