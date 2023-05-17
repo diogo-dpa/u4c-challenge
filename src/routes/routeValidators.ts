@@ -45,52 +45,57 @@ export const bodyUserUpdateValidator = () =>
 
 export const bodyEventCreateValidator = () =>
 	Joi.object({
-		clientId: Joi.string().min(2).max(10),
-		vehicleId: Joi.string().isoDate().required(),
-		occurenceType: Joi.string().required(),
-		occurenceDate: Joi.string().isoDate().required(),
+		clientId: Joi.number().required(),
+		vehicleId: Joi.number().required(),
+		occurenceType: Joi.number().required(),
+		occurenceDate: Joi.string().required(),
+		occurenceCost: Joi.number().required(),
 		thirdPartyUsers: Joi.array()
 			.items(
 				Joi.object({
-					fullName: Joi.string().min(2).max(10),
-					birthDate: Joi.string().isoDate().required(),
-					email: Joi.string().email().optional(),
+					fullName: Joi.string().min(2).max(10).required(),
+					birthDate: Joi.string().required(),
+					email: Joi.string().email().required(),
 					cellphone: Joi.string().optional(),
-					isThirdPartyEvent: Joi.string().email().optional(),
 					documents: Joi.object({
-						rg: Joi.string().min(8).max(8).optional(),
-						cpf: Joi.string().min(11).max(11).optional(),
-						cnh: Joi.string().min(10).max(10).optional(),
+						rg: Joi.string().min(8).max(8).required(),
+						cpf: Joi.string().min(11).max(11).required(),
+						cnh: Joi.string().min(10).max(10).required(),
 						passport: Joi.string().optional(),
-					}).optional(),
+					}).required(),
 					address: Joi.object({
-						zipcode: Joi.string().min(8).max(8).optional(),
-						street: Joi.string().min(5).max(50).optional(),
-						number: Joi.number().optional(),
+						zipcode: Joi.string().min(8).max(8).required(),
+						street: Joi.string().min(5).max(50).required(),
+						number: Joi.number().required(),
 						complement: Joi.string().max(50).optional(),
-						state: Joi.string().min(5).max(50).optional(),
-						country: Joi.string().min(4).max(50).optional(),
-						neighborhood: Joi.string().min(2).max(50).optional(),
+						state: Joi.string().min(2).max(50).required(),
+						country: Joi.string().min(4).max(50).required(),
+						neighborhood: Joi.string().min(2).max(50).required(),
 					}).required(),
 				})
 			)
 			.optional(),
+		address: Joi.object({
+			zipcode: Joi.string().min(8).max(8).required(),
+			street: Joi.string().min(5).max(50).required(),
+			number: Joi.number().required(),
+			complement: Joi.string().max(50).optional(),
+			state: Joi.string().min(2).max(50).required(),
+			country: Joi.string().min(4).max(50).required(),
+			neighborhood: Joi.string().min(2).max(50).required(),
+		}).required(),
 	});
 
 export const bodyEventUpdateValidator = () =>
 	Joi.object({
-		clientId: Joi.string().min(2).max(10),
-		vehicleId: Joi.string().isoDate().required(),
-		occurenceType: Joi.string().required(),
-		occurenceDate: Joi.string().isoDate().required(),
+		occurenceType: Joi.number().optional(),
+		occurenceDate: Joi.string().isoDate().optional(),
+		occurenceCost: Joi.number().optional(),
 		thirdPartyUsers: Joi.array()
 			.items(
 				Joi.object({
-					fullName: Joi.string().min(2).max(10),
-					birthDate: Joi.string().isoDate().required(),
 					email: Joi.string().email().optional(),
 					cellphone: Joi.string().optional(),
-					isThirdPartyEvent: Joi.string().email().optional(),
 					documents: Joi.object({
 						rg: Joi.string().min(8).max(8).optional(),
 						cpf: Joi.string().min(11).max(11).optional(),
@@ -98,17 +103,27 @@ export const bodyEventUpdateValidator = () =>
 						passport: Joi.string().optional(),
 					}).optional(),
 					address: Joi.object({
-						zipcode: Joi.string().min(8).max(8).optional(),
-						street: Joi.string().min(5).max(50).optional(),
+						id: Joi.number().optional(),
+						zipcode: Joi.string().optional().min(8).max(8),
+						street: Joi.string().optional().min(5).max(50),
 						number: Joi.number().optional(),
-						complement: Joi.string().max(50).optional(),
-						state: Joi.string().min(5).max(50).optional(),
-						country: Joi.string().min(4).max(50).optional(),
-						neighborhood: Joi.string().min(2).max(50).optional(),
-					}).required(),
+						complement: Joi.string().optional().max(50),
+						state: Joi.string().optional().min(2).max(50),
+						country: Joi.string().optional().min(4).max(50),
+						neighborhood: Joi.string().optional().min(2).max(50),
+					}).optional(),
 				})
 			)
 			.optional(),
+		address: Joi.object({
+			zipcode: Joi.string().min(8).max(8).optional(),
+			street: Joi.string().min(5).max(50).optional(),
+			number: Joi.number().optional(),
+			complement: Joi.string().max(50).optional(),
+			state: Joi.string().min(5).max(50).optional(),
+			country: Joi.string().min(4).max(50).optional(),
+			neighborhood: Joi.string().min(2).max(50).optional(),
+		}).optional(),
 	});
 
 export const bodyOccurenceTypeCreateUpdateValidator = () =>
@@ -125,7 +140,7 @@ export const bodyVehicleCreateValidator = () =>
 		chassis: Joi.string().min(17).max(17).required(),
 		plate: Joi.string().min(7).max(7).required(),
 		mileage: Joi.number().required(),
-		owner: Joi.string().required(),
+		owner: Joi.number().required(),
 	});
 
 export const bodyVehicleUpdateValidator = () =>
@@ -137,7 +152,7 @@ export const bodyVehicleUpdateValidator = () =>
 		chassis: Joi.string().min(17).max(17).optional(),
 		plate: Joi.string().min(7).max(7).optional(),
 		mileage: Joi.number().optional(),
-		ownerId: Joi.string().optional(),
+		ownerId: Joi.number().optional(),
 	});
 
 export const generalParamsIdValidator = () =>

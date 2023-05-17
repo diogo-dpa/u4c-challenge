@@ -43,7 +43,7 @@ export class UserRepository implements IUserRepository {
 		address: AddressData,
 		document: number
 	): Promise<User> {
-		const userTeste = {
+		const formattedUser = {
 			fullName,
 			birthDate,
 			email,
@@ -53,7 +53,7 @@ export class UserRepository implements IUserRepository {
 			document,
 		} as any;
 
-		return await this._dbConnection.save(userTeste);
+		return await this._dbConnection.save(formattedUser);
 	}
 
 	public async updateUser(id: number, newUserData: User): Promise<User> {

@@ -2,6 +2,7 @@ import { Event } from "../config/entities/Event";
 import { IEventRepository } from "../irepositories/IEventRepository";
 import { DataSource, Repository } from "typeorm";
 import { EVENT_NOT_FOUND_ERROR_MESSAGE } from "../utils/consts";
+import { EventData } from "../utils/interfaces";
 
 export class EventRepository implements IEventRepository {
 	private _dbConnection: Repository<Event>;
@@ -23,6 +24,8 @@ export class EventRepository implements IEventRepository {
 			},
 		});
 
+		if (!eventsFound) throw new Error(EVENT_NOT_FOUND_ERROR_MESSAGE);
+
 		return eventsFound.pop();
 	}
 
@@ -37,23 +40,14 @@ export class EventRepository implements IEventRepository {
 	}
 
 	public async saveEvent(newEvent: Event): Promise<Event> {
-		// const userTeste = {
-		// 	fullName,
-		// 	birthDate,
-		// 	email,
-		// 	isThirdPartyUser,
-		// 	cellphone,
-		// 	addresses: [address],
-		// 	document,
-		// } as any;
-
-		const result = await this._dbConnection.save(newEvent);
-		console.log({ result });
-		return result;
+		return await this._dbConnection.save(newEvent);
 	}
 
-	public async updateEvent(id: number, updatedEvent: Event): Promise<Event> {
-		const { eventCost, eventDate } = updatedEvent;
+	public async updateEvent(
+		id: number,
+		updatedEvent: EventData
+	): Promise<Event> {
+		const { occurenceCost, occurenceDate } = updatedEvent;
 
 		const eventsFound = await this._dbConnection.find({
 			where: {
@@ -74,8 +68,8 @@ export class EventRepository implements IEventRepository {
 
 		return await this._dbConnection.save({
 			...eventFound,
-			eventCost: eventCost ?? eventFound.eventCost,
-			eventDate: eventDate ?? eventFound.eventDate,
+			eventCost: occurenceCost ?? eventFound.eventCost,
+			eventDate: occurenceDate ?? eventFound.eventDate,
 		});
 	}
 }

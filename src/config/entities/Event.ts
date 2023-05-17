@@ -25,7 +25,7 @@ export class Event extends BaseEntity {
 
 	@ManyToMany(
 		() => User,
-		(thirrdPartyUser) => thirrdPartyUser.thirdPartyUserEvents,
+		(thirdPartyUser) => thirdPartyUser.thirdPartyUserEvents,
 		{
 			cascade: true,
 			eager: true,
@@ -45,7 +45,11 @@ export class Event extends BaseEntity {
 	@JoinColumn()
 	occurenceType: OccurenceType;
 
-	@ManyToOne(() => Address, (address) => address.event, { onDelete: "CASCADE" })
+	@ManyToOne(() => Address, (address) => address.event, {
+		cascade: true,
+		eager: true,
+		onDelete: "CASCADE",
+	})
 	@JoinColumn()
 	address: Address;
 

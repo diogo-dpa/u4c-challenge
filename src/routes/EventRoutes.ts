@@ -9,13 +9,27 @@ import {
 	generalParamsIdValidator,
 } from "./routeValidators";
 import { BaseRoutes } from "./BaseRoutes";
+import { VehicleRepository } from "../repositories/VehicleRepository";
+import { UserRepository } from "../repositories/UserRepository";
+import { DocumentRepository } from "../repositories/DocumentRepository";
+import { AddressRepository } from "../repositories/AddressRepository";
 
 export class EventRoutes implements BaseRoutes {
 	private _eventController: EventController;
 
 	constructor() {
 		const eventRepository = new EventRepository(AppDataSource);
-		const eventService = new EventService(eventRepository);
+		const vehicleRepository = new VehicleRepository(AppDataSource);
+		const userRepository = new UserRepository(AppDataSource);
+		const documentRepository = new DocumentRepository(AppDataSource);
+		const addressRepository = new AddressRepository(AppDataSource);
+		const eventService = new EventService(
+			eventRepository,
+			vehicleRepository,
+			userRepository,
+			documentRepository,
+			addressRepository
+		);
 
 		this._eventController = new EventController(eventService);
 	}

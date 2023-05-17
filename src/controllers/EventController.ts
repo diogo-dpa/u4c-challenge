@@ -19,7 +19,6 @@ export class EventController {
 			const { id } = request.params;
 
 			const result = await this._eventService.getEvent(id);
-			console.log({ result });
 
 			return ResponseHandler.successResponse(
 				reply,
@@ -45,10 +44,25 @@ export class EventController {
 
 	async saveEvent(request: Request, reply: ResponseToolkit) {
 		try {
-			const { type } = request.payload as any;
+			const {
+				clientId,
+				vehicleId,
+				occurenceType,
+				occurenceDate,
+				occurenceCost,
+				thirdPartyUsers,
+				address,
+			} = request.payload as any;
 
-			const result = await this._eventService.saveEvent(type);
-			console.log({ result });
+			const result = await this._eventService.saveEvent({
+				clientId,
+				vehicleId,
+				occurenceType,
+				occurenceDate,
+				occurenceCost,
+				thirdPartyUser: thirdPartyUsers,
+				address,
+			} as any);
 
 			return ResponseHandler.successResponse(
 				reply,
@@ -62,12 +76,27 @@ export class EventController {
 
 	async updateEvent(request: Request, reply: ResponseToolkit) {
 		try {
-			const { type } = request.payload as any;
+			const {
+				clientId,
+				vehicleId,
+				occurenceType,
+				occurenceDate,
+				occurenceCost,
+				thirdPartyUsers,
+				address,
+			} = request.payload as any;
 
 			const { id } = request.params;
 
-			const updatedEvent = await this._eventService.updateEvent(id, type);
-			console.log({ updatedEvent });
+			const updatedEvent = await this._eventService.updateEvent(id, {
+				client: clientId,
+				vehicles: vehicleId,
+				occurenceType,
+				eventDate: occurenceDate,
+				eventCost: occurenceCost,
+				thirdPartyUser: thirdPartyUsers,
+				address,
+			} as any);
 
 			return ResponseHandler.successResponse(
 				reply,
