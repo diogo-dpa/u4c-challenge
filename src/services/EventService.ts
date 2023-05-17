@@ -1,3 +1,4 @@
+import { Document } from "../config/entities/Document";
 import { Event } from "../config/entities/Event";
 import { IEventService } from "../iservices/IEventService";
 import { AddressRepository } from "../repositories/AddressRepository";
@@ -5,7 +6,7 @@ import { DocumentRepository } from "../repositories/DocumentRepository";
 import { EventRepository } from "../repositories/EventRepository";
 import { UserRepository } from "../repositories/UserRepository";
 import { VehicleRepository } from "../repositories/VehicleRepository";
-import { EventData } from "../utils/interfaces";
+import { EventData, UserData } from "../utils/interfaces";
 
 export class EventService implements IEventService {
 	private _eventRepository: EventRepository;
@@ -45,36 +46,16 @@ export class EventService implements IEventService {
 		const userFound = await this._userRepository.getUser(clientId);
 		const vehicleFound = await this._vehicleRepository.getVehicle(vehicleId);
 
-		const documentsToAdd = thirdPartyUser.map((x) => x.documents);
+		let updatedThirdPartyUser = [];
 
-		const documentPromises = documentsToAdd.map((x) => {
-			const { cnh, cpf, rg, passport } = x;
+		const documentsFoundFromExistingUsersResult =
+			await this.findExistingUserByCPFDocument(thirdPartyUser);
 
-			return this._documentRepository.saveDocument(cnh, cpf, rg, passport);
-		});
-
-		const documentPromisesResult = await Promise.all([...documentPromises]);
-
-		const thirdPartyUserCreatedPromises = thirdPartyUser.map((x, index) => {
-			return this._userRepository.saveUser(
-				x.fullName,
-				x.birthDate as any,
-				x.email,
-				x.cellphone,
-				true,
-				x.address,
-				documentPromisesResult[index].id
-			);
-		});
-
-		const thirdPartyUserPromisesResult = await Promise.all([
-			...thirdPartyUserCreatedPromises,
-		]);
-
-		const updatedThirdPartyUser = thirdPartyUserPromisesResult.map((trp) => ({
-			...trp,
-			isThirdPartyUser: true,
-		}));
+		updatedThirdPartyUser = await this.dealThirdPartUserIfDocumentExists(
+			documentsFoundFromExistingUsersResult,
+			updatedThirdPartyUser,
+			thirdPartyUser
+		);
 
 		const newEventData = {
 			client: [userFound],
@@ -97,4 +78,87 @@ export class EventService implements IEventService {
 	): Promise<Event> {
 		return await this._eventRepository.updateEvent(id, updatedEvent);
 	}
+
+	//#region Private Methods
+
+	private async dealThirdPartUserIfDocumentExists(
+		documentsFoundFromExistingUsersResult: Document[],
+		updatedThirdPartyUser: any[],
+		thirdPartyUser: UserData[]
+	) {
+		if (documentsFoundFromExistingUsersResult.some((x) => x?.id)) {
+			const updatedUsersPromises = documentsFoundFromExistingUsersResult.map(
+				(o) => {
+					if (o?.user?.id && !o?.user?.isThirdPartyUser) {
+						return this._userRepository.updateUser(o?.user?.id, {
+							isThirdPartyUser: false,
+						});
+					}
+				}
+			);
+			updatedThirdPartyUser = await Promise.all([...updatedUsersPromises]);
+		} else {
+			const documentPromisesResult = await this.saveThirdPartyUsersDocument(
+				thirdPartyUser
+			);
+
+			const thirdPartyUserPromisesResult = await this.saveThirdPartyUsers(
+				thirdPartyUser,
+				documentPromisesResult
+			);
+
+			updatedThirdPartyUser = thirdPartyUserPromisesResult.map((trp) => ({
+				...trp,
+				isThirdPartyUser: true,
+			}));
+		}
+		return updatedThirdPartyUser;
+	}
+
+	private async findExistingUserByCPFDocument(thirdPartyUser: UserData[]) {
+		const documentsFoundFromExistingUsersPromises = thirdPartyUser.map((x) =>
+			this._documentRepository.getDocumentByCPF(x.documents.cpf)
+		);
+
+		const documentsFoundFromExistingUsersResult = await Promise.all([
+			...documentsFoundFromExistingUsersPromises,
+		]);
+		return documentsFoundFromExistingUsersResult;
+	}
+
+	private async saveThirdPartyUsers(
+		thirdPartyUser: UserData[],
+		documentPromisesResult: Document[]
+	) {
+		const thirdPartyUserCreatedPromises = thirdPartyUser.map((x, index) => {
+			return this._userRepository.saveUser(
+				x.fullName,
+				x.birthDate as any,
+				x.email,
+				x.cellphone,
+				true,
+				x.address,
+				documentPromisesResult[index].id
+			);
+		});
+
+		const thirdPartyUserPromisesResult = await Promise.all([
+			...thirdPartyUserCreatedPromises,
+		]);
+		return thirdPartyUserPromisesResult;
+	}
+
+	private async saveThirdPartyUsersDocument(thirdPartyUser: UserData[]) {
+		const documentsToAdd = thirdPartyUser.map((x) => x.documents);
+
+		const documentPromises = documentsToAdd.map((x) => {
+			const { cnh, cpf, rg, passport } = x;
+
+			return this._documentRepository.saveDocument(cnh, cpf, rg, passport);
+		});
+
+		const documentPromisesResult = await Promise.all([...documentPromises]);
+		return documentPromisesResult;
+	}
+	//#endregion
 }

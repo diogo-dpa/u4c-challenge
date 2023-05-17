@@ -9,6 +9,18 @@ export class DocumentRepository implements IDocumentRepository {
 	constructor(dbConnection: DataSource) {
 		this._dbConnection = dbConnection.getRepository(Document);
 	}
+	public async getDocumentByCPF(cpf: string): Promise<Document> {
+		const documentFound = await this._dbConnection.find({
+			where: {
+				cpf,
+			},
+			relations: {
+				user: true,
+			},
+		});
+
+		return documentFound.pop();
+	}
 
 	async deleteDocument(id: number): Promise<void> {
 		const documentFound = await this._dbConnection.findOneBy({

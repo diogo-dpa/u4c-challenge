@@ -1,7 +1,7 @@
 import { User } from "../config/entities/User";
 import { IUserRepository } from "../irepositories/IUserRepository";
 import { DataSource, Repository } from "typeorm";
-import { AddressData } from "../utils/interfaces";
+import { AddressData, UserDataUpdate } from "../utils/interfaces";
 import { USER_NOT_FOUND_ERROR_MESSAGE } from "../utils/consts";
 
 export class UserRepository implements IUserRepository {
@@ -56,7 +56,10 @@ export class UserRepository implements IUserRepository {
 		return await this._dbConnection.save(formattedUser);
 	}
 
-	public async updateUser(id: number, newUserData: User): Promise<User> {
+	public async updateUser(
+		id: number,
+		newUserData: UserDataUpdate
+	): Promise<User> {
 		const { email, isThirdPartyUser, cellphone, addresses } = newUserData;
 
 		const usersFound = await this._dbConnection.find({
@@ -77,7 +80,7 @@ export class UserRepository implements IUserRepository {
 			email: email ?? userFound.email,
 			isThirdPartyUser: isThirdPartyUser ?? userFound.isThirdPartyUser,
 			cellphone: cellphone ?? userFound.cellphone,
-			addresses: [...addresses] ?? userFound.addresses,
+			addresses: addresses ? [...addresses] : userFound.addresses,
 		});
 	}
 }

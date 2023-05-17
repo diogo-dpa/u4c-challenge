@@ -1,5 +1,5 @@
 import { User } from "../config/entities/User";
-import { AddressData } from "../utils/interfaces";
+import { AddressData, UserDataUpdate } from "../utils/interfaces";
 
 export abstract class IUserRepository {
 	public abstract getUser(id: number): Promise<User>;
@@ -14,5 +14,8 @@ export abstract class IUserRepository {
 		document: number
 	): Promise<User>;
 
-	public abstract updateUser(id: number, newUserData: User): Promise<User>;
+	public abstract updateUser(
+		id: number,
+		newUserData: UserDataUpdate
+	): Promise<User>;
 }

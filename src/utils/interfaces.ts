@@ -17,7 +17,7 @@ export interface AddressData {
 	neighborhood: string;
 }
 
-interface UserData {
+export interface UserData {
 	fullName: string;
 	birthDate: string;
 	email: string;
@@ -25,6 +25,13 @@ interface UserData {
 	cellphone: string;
 	documents: DocumentData;
 	address: AddressData;
+}
+
+export interface UserDataUpdate {
+	email?: string;
+	isThirdPartyUser?: boolean;
+	cellphone?: string;
+	addresses?: AddressData[];
 }
 
 export interface EventData {
