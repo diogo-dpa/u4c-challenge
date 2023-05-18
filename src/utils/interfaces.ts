@@ -38,8 +38,8 @@ export interface EventData {
 	clientId?: number;
 	vehicleId?: number;
 	occurenceType: number;
-	occurenceDate?: string;
-	occurenceCost?: number;
-	thirdPartyUser?: UserData[];
+	eventDate?: string;
+	eventCost?: number;
+	thirdPartyUsers?: UserData[];
 	address?: AddressData;
 }

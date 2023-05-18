@@ -7,9 +7,4 @@ export abstract class IEventService {
 	public abstract deleteEvent(id: number): Promise<void>;
 
 	public abstract saveEvent(newEvent: EventData): Promise<Event>;
-
-	public abstract updateEvent(
-		id: number,
-		updatedEvent: EventData
-	): Promise<Event>;
 }

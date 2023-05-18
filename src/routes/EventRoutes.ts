@@ -76,22 +76,7 @@ export class EventRoutes implements BaseRoutes {
 		};
 	}
 
-	private update() {
-		return {
-			method: "PUT",
-			path: "/events/{id}",
-			handler: (request: Request, reply: ResponseToolkit) =>
-				this._eventController.updateEvent(request, reply),
-			options: {
-				validate: {
-					params: generalParamsIdValidator(),
-					payload: bodyEventUpdateValidator(),
-				},
-			},
-		};
-	}
-
 	public returnDomainRoutes() {
-		return [this.post(), this.getSpecific(), this.delete(), this.update()];
+		return [this.post(), this.getSpecific(), this.delete()];
 	}
 }

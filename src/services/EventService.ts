@@ -6,6 +6,8 @@ import { DocumentRepository } from "../repositories/DocumentRepository";
 import { EventRepository } from "../repositories/EventRepository";
 import { UserRepository } from "../repositories/UserRepository";
 import { VehicleRepository } from "../repositories/VehicleRepository";
+import { VEHICLE_NOT_FOUND_ERROR_MESSAGE } from "../utils/consts";
+import { USER_NOT_FOUND_ERROR_MESSAGE } from "../utils/consts";
 import { EventData, UserData } from "../utils/interfaces";
 
 export class EventService implements IEventService {
@@ -41,28 +43,33 @@ export class EventService implements IEventService {
 	}
 
 	public async saveEvent(newEvent: EventData): Promise<Event> {
-		const { clientId, vehicleId, thirdPartyUser } = newEvent;
+		const { clientId, vehicleId, thirdPartyUsers } = newEvent;
 
 		const userFound = await this._userRepository.getUser(clientId);
+
+		if (!userFound) throw Error(USER_NOT_FOUND_ERROR_MESSAGE);
+
 		const vehicleFound = await this._vehicleRepository.getVehicle(vehicleId);
+
+		if (!vehicleFound) throw Error(VEHICLE_NOT_FOUND_ERROR_MESSAGE);
 
 		let updatedThirdPartyUser = [];
 
 		const documentsFoundFromExistingUsersResult =
-			await this.findExistingUserByCPFDocument(thirdPartyUser);
+			await this.findExistingUserByCPFDocument(thirdPartyUsers);
 
 		updatedThirdPartyUser = await this.dealThirdPartUserIfDocumentExists(
 			documentsFoundFromExistingUsersResult,
 			updatedThirdPartyUser,
-			thirdPartyUser
+			thirdPartyUsers
 		);
 
 		const newEventData = {
 			client: [userFound],
 			vehicles: [vehicleFound],
 			occurenceType: newEvent.occurenceType,
-			eventDate: newEvent.occurenceDate,
-			eventCost: newEvent.occurenceCost,
+			eventDate: newEvent.eventDate,
+			eventCost: newEvent.eventCost,
 			address: newEvent.address,
 		};
 
@@ -71,14 +78,6 @@ export class EventService implements IEventService {
 			thirdPartyUser: updatedThirdPartyUser,
 		} as any);
 	}
-
-	public async updateEvent(
-		id: number,
-		updatedEvent: EventData
-	): Promise<Event> {
-		return await this._eventRepository.updateEvent(id, updatedEvent);
-	}
-
 	//#region Private Methods
 
 	private async dealThirdPartUserIfDocumentExists(
@@ -116,9 +115,9 @@ export class EventService implements IEventService {
 	}
 
 	private async findExistingUserByCPFDocument(thirdPartyUser: UserData[]) {
-		const documentsFoundFromExistingUsersPromises = thirdPartyUser.map((x) =>
-			this._documentRepository.getDocumentByCPF(x.documents.cpf)
-		);
+		const documentsFoundFromExistingUsersPromises = thirdPartyUser.map((x) => {
+			return this._documentRepository.getDocumentByCPF(x.documents.cpf);
+		});
 
 		const documentsFoundFromExistingUsersResult = await Promise.all([
 			...documentsFoundFromExistingUsersPromises,

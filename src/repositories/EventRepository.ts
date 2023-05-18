@@ -42,34 +42,4 @@ export class EventRepository implements IEventRepository {
 	public async saveEvent(newEvent: Event): Promise<Event> {
 		return await this._dbConnection.save(newEvent);
 	}
-
-	public async updateEvent(
-		id: number,
-		updatedEvent: EventData
-	): Promise<Event> {
-		const { occurenceCost, occurenceDate } = updatedEvent;
-
-		const eventsFound = await this._dbConnection.find({
-			where: {
-				id,
-			},
-			relations: {
-				thirdPartyUser: true,
-				address: true,
-				client: true,
-				vehicles: true,
-				occurenceType: true,
-			},
-		});
-
-		if (!eventsFound) throw new Error(EVENT_NOT_FOUND_ERROR_MESSAGE);
-		const eventFound = eventsFound.pop();
-		console.log({ eventsFound });
-
-		return await this._dbConnection.save({
-			...eventFound,
-			eventCost: occurenceCost ?? eventFound.eventCost,
-			eventDate: occurenceDate ?? eventFound.eventDate,
-		});
-	}
 }
