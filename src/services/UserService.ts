@@ -112,17 +112,14 @@ export class UserService implements IUserService {
 		};
 
 		if (addresses.length > 0) {
-			const a = addresses.map((add) => Object.entries(add));
 			if (
 				addresses
-					.map((add) =>
-						Object.entries(add)
-							.flat()
-							.some((key) => key[0] === "id" && !!key[1])
-					)
-					.some((f) => f)
-			)
+					.map((add) => Object.entries(add))
+					.flat()
+					.some((key) => key[0] === "id" && !key[1])
+			) {
 				throw Error(INVALID_ADDRESS_ID_ERROR_MESSAGE);
+			}
 
 			const addressFoundPromises = addresses.map((x) =>
 				this._addressService.getAddress(x.id)
@@ -145,7 +142,6 @@ export class UserService implements IUserService {
 				addresses: [...updatedAddresses],
 			};
 		}
-
 		return await this._userRepository.updateUser(id, userData);
 	}
 }
