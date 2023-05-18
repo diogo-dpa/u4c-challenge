@@ -4,7 +4,10 @@ jest.mock("../../config/database");
 import { AddressRepository } from "../../repositories/AddressRepository";
 import { AddressService } from "../AddressService";
 import { DataSource } from "typeorm";
-import { Address } from "../../config/entities/Address";
+import {
+	idParamsInputMock,
+	successAddressResponseFromDatabase,
+} from "../__mocks__/AddressService.mock";
 
 describe("AddressService", () => {
 	const DataSourceMock = DataSource as jest.Mock<DataSource>;
@@ -20,47 +23,38 @@ describe("AddressService", () => {
 		jest.restoreAllMocks();
 	});
 
-	const successResponseFromDataBase = {
-		id: 1,
-		createdAt: new Date("2023-05-17T23:27:55.440Z"),
-		updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-		street: "Avenida do Contorno",
-		zipcode: "30123456",
-		country: "Brazil",
-		complement: "Near the bakery",
-		number: 302,
-		neighborhood: "Centro",
-		state: "MG",
-	} as Address;
-
 	describe("getAddress", () => {
-		it("should call the getOccurenceType with the right parameters and return correctly", async () => {
+		it("should call the getAddress with the right parameters and return correctly", async () => {
 			jest
 				.spyOn(AddressRepository.prototype, "getAddress")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successAddressResponseFromDatabase);
 
 			const action = async () => {
-				return await addressService.getAddress(1);
+				return await addressService.getAddress(idParamsInputMock);
 			};
 
 			const result = await action();
 
 			expect(addressRepository.getAddress).toHaveBeenCalledTimes(1);
-			expect(addressRepository.getAddress).toHaveBeenCalledWith(1);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(addressRepository.getAddress).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
+			expect(result).toEqual(successAddressResponseFromDatabase);
 		});
 	});
 
 	describe("deleteAddress", () => {
 		it("should call the deleteAddress with the right parameters", async () => {
 			const action = async () => {
-				return await addressService.deleteAddress(1);
+				return await addressService.deleteAddress(idParamsInputMock);
 			};
 
 			await action();
 
 			expect(addressRepository.deleteAddress).toHaveBeenCalledTimes(1);
-			expect(addressRepository.deleteAddress).toHaveBeenCalledWith(1);
+			expect(addressRepository.deleteAddress).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
 		});
 	});
 
@@ -68,10 +62,10 @@ describe("AddressService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(AddressRepository.prototype, "saveAddress")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successAddressResponseFromDatabase);
 		});
 
-		it("should call the method with the right parameters", async () => {
+		it("should call the method saveAddress with the right parameters", async () => {
 			const action = async () => {
 				return await addressService.saveAddress(
 					"30123456",
@@ -96,7 +90,7 @@ describe("AddressService", () => {
 				"Centro",
 				"Near the bakery"
 			);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(result).toEqual(successAddressResponseFromDatabase);
 		});
 	});
 });

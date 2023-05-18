@@ -15,7 +15,12 @@ import { DocumentRepository } from "../../repositories/DocumentRepository";
 import { DocumentService } from "../DocumentService";
 import { AddressRepository } from "../../repositories/AddressRepository";
 import { AddressService } from "../AddressService";
-import { Address } from "../../config/entities/Address";
+import {
+	idParamsInputMock,
+	successAddressResponseFromDataBaseUserTest,
+	successDocumentResponseFromDataBaseUserTest,
+	successUserResponseFromDataBase,
+} from "../__mocks__/UserService.mock";
 
 describe("UserService", () => {
 	const DataSourceMock = DataSource as jest.Mock<DataSource>;
@@ -49,46 +54,12 @@ describe("UserService", () => {
 		jest.restoreAllMocks();
 	});
 
-	const successResponseFromDataBase = {
-		id: 1,
-		createdAt: new Date("2023-05-17T23:27:55.440Z"),
-		updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-		fullName: "João",
-		birthDate: new Date("2000-05-17T00:00:00.440Z"),
-		cellphone: "61 9999-9999",
-		email: "joao@email.com",
-		isThirdPartyUser: false,
-		addresses: [
-			{
-				id: 1,
-				createdAt: new Date("2023-05-17T23:27:55.440Z"),
-				updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-				street: "Avenida do Contorno",
-				zipcode: "30123456",
-				country: "Brazil",
-				complement: "Near the bakery",
-				number: 302,
-				neighborhood: "Centro",
-				state: "MG",
-			},
-		],
-		document: {
-			id: 1,
-			createdAt: new Date("2023-05-17T23:27:55.440Z"),
-			updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-			cnh: "XXX",
-			cpf: "YYY",
-			rg: "WWW",
-			passport: "LLL",
-		},
-	};
-
 	describe("getUser", () => {
 		it("should return error when trying to get an user that doesn't exists", async () => {
 			jest.spyOn(UserRepository.prototype, "getUser").mockResolvedValue(null);
 
 			const action = async () => {
-				await userService.getUser(2);
+				await userService.getUser(idParamsInputMock);
 			};
 
 			await expect(action()).rejects.toThrow(USER_NOT_FOUND_ERROR_MESSAGE);
@@ -97,17 +68,17 @@ describe("UserService", () => {
 		it("should call the getUser with the right parameters and return correctly", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 
 			const action = async () => {
-				return await userService.getUser(1);
+				return await userService.getUser(idParamsInputMock);
 			};
 
 			const result = await action();
 
 			expect(userRepository.getUser).toHaveBeenCalledTimes(1);
-			expect(userRepository.getUser).toHaveBeenCalledWith(1);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(userRepository.getUser).toHaveBeenCalledWith(idParamsInputMock);
+			expect(result).toEqual(successUserResponseFromDataBase);
 		});
 	});
 
@@ -115,90 +86,57 @@ describe("UserService", () => {
 		it("should call the deleteUser with the right parameters", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 			const action = async () => {
-				return await userService.deleteUser(1);
+				return await userService.deleteUser(idParamsInputMock);
 			};
 
 			await action();
 
 			expect(userRepository.deleteUser).toHaveBeenCalledTimes(1);
-			expect(userRepository.deleteUser).toHaveBeenCalledWith(1);
+			expect(userRepository.deleteUser).toHaveBeenCalledWith(idParamsInputMock);
 		});
 
 		it("should call the deleteDocument with the right parameters", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 
 			const action = async () => {
-				return await userService.deleteUser(1);
+				return await userService.deleteUser(idParamsInputMock);
 			};
 
 			await action();
 
 			expect(documentRepository.deleteDocument).toHaveBeenCalledTimes(1);
 			expect(documentRepository.deleteDocument).toHaveBeenCalledWith(
-				successResponseFromDataBase.document.id
+				successUserResponseFromDataBase.document.id
 			);
 		});
 
 		it("should call the deleteAddress with the right parameters", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 
 			const action = async () => {
-				return await userService.deleteUser(1);
+				return await userService.deleteUser(idParamsInputMock);
 			};
 
 			await action();
 
 			expect(addressRepository.deleteAddress).toHaveBeenCalledTimes(1);
 			expect(addressRepository.deleteAddress).toHaveBeenCalledWith(
-				successResponseFromDataBase.addresses[0].id
+				successUserResponseFromDataBase.addresses[0].id
 			);
 		});
 	});
 
 	describe("saveUser", () => {
-		const successResponseDocumentFromDataBase = {
-			id: 1,
-			createdAt: new Date("2023-05-17T23:27:55.440Z"),
-			updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-			cnh: "XXX",
-			cpf: "YYY",
-			rg: "WWW",
-			passport: "LLL",
-			user: {
-				fullName: "João",
-				birthDate: new Date("2000-05-17T00:00:00.440Z"),
-				cellphone: "61 9999-9999",
-				email: "joao@email.com",
-				isThirdPartyUser: true,
-				id: 1,
-				addresses: [
-					{
-						id: 1,
-						createdAt: new Date("2023-05-17T23:27:55.440Z"),
-						updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-						street: "Avenida do Contorno",
-						zipcode: "30123456",
-						country: "Brazil",
-						complement: "Near the bakery",
-						number: 302,
-						neighborhood: "Centro",
-						state: "MG",
-					},
-				],
-				createdAt: new Date("2023-05-17T23:27:55.440Z"),
-				updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-			},
-		};
 		beforeEach(() => {
 			jest
 				.spyOn(UserRepository.prototype, "saveUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 		});
 
 		it("should call the method with the right parameters when the user doesn't exist in the database", async () => {
@@ -208,7 +146,7 @@ describe("UserService", () => {
 
 			jest
 				.spyOn(DocumentRepository.prototype, "saveDocument")
-				.mockResolvedValue(successResponseDocumentFromDataBase as any);
+				.mockResolvedValue(successDocumentResponseFromDataBaseUserTest);
 
 			const action = async () => {
 				return await userService.saveUser(
@@ -253,23 +191,23 @@ describe("UserService", () => {
 					neighborhood: "Centro",
 					state: "MG",
 				},
-				successResponseDocumentFromDataBase.id
+				successDocumentResponseFromDataBaseUserTest.id
 			);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(result).toEqual(successUserResponseFromDataBase);
 		});
 
 		it("should call the method with the right parameters when the user exists in the database", async () => {
 			jest
 				.spyOn(DocumentRepository.prototype, "getDocumentByCPF")
-				.mockResolvedValue(successResponseDocumentFromDataBase as any);
+				.mockResolvedValue(successDocumentResponseFromDataBaseUserTest);
 
 			jest
 				.spyOn(DocumentRepository.prototype, "saveDocument")
-				.mockResolvedValue(successResponseDocumentFromDataBase as any);
+				.mockResolvedValue(successDocumentResponseFromDataBaseUserTest);
 
 			jest
 				.spyOn(UserRepository.prototype, "updateUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 
 			const action = async () => {
 				return await userService.saveUser(
@@ -300,12 +238,12 @@ describe("UserService", () => {
 
 			expect(userRepository.updateUser).toHaveBeenCalledTimes(1);
 			expect(userRepository.updateUser).toHaveBeenCalledWith(
-				successResponseDocumentFromDataBase.user.id,
+				successDocumentResponseFromDataBaseUserTest.user.id,
 				{
 					isThirdPartyUser: false,
 				}
 			);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(result).toEqual(successUserResponseFromDataBase);
 		});
 	});
 
@@ -313,7 +251,7 @@ describe("UserService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(UserRepository.prototype, "updateUser")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successUserResponseFromDataBase);
 		});
 
 		it("should return error when trying to update the fullName of an user", async () => {
@@ -357,31 +295,16 @@ describe("UserService", () => {
 		});
 
 		it("should call the method with the right parameters", async () => {
-			const successResponseAddressFromDataBase = [
-				{
-					id: 1,
-					createdAt: new Date("2023-05-17T23:27:55.440Z"),
-					updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-					street: "Avenida do Contorno",
-					zipcode: "30123456",
-					country: "Brazil",
-					complement: "Near the bakery",
-					number: 302,
-					neighborhood: "Centro",
-					state: "MG",
-				},
-			] as Address[];
-
 			jest
 				.spyOn(AddressRepository.prototype, "getAddress")
-				.mockResolvedValue(successResponseAddressFromDataBase as any);
+				.mockResolvedValue(successAddressResponseFromDataBaseUserTest);
 
 			const action = async () => {
-				return await userService.updateUser(1, {
+				return await userService.updateUser(idParamsInputMock, {
 					email: "joao@email.com",
 					addresses: [
 						{
-							id: 1,
+							id: idParamsInputMock,
 							street: "Avenida do Contorno",
 						},
 					],
@@ -391,18 +314,23 @@ describe("UserService", () => {
 			const result = await action();
 
 			expect(addressRepository.getAddress).toHaveBeenCalledTimes(1);
-			expect(addressRepository.getAddress).toHaveBeenCalledWith(1);
+			expect(addressRepository.getAddress).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
 			expect(userRepository.updateUser).toHaveBeenCalledTimes(1);
-			expect(userRepository.updateUser).toHaveBeenCalledWith(1, {
-				email: "joao@email.com",
-				addresses: [
-					{
-						id: 1,
-						street: "Avenida do Contorno",
-					},
-				],
-			});
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(userRepository.updateUser).toHaveBeenCalledWith(
+				idParamsInputMock,
+				{
+					email: "joao@email.com",
+					addresses: [
+						{
+							id: idParamsInputMock,
+							street: "Avenida do Contorno",
+						},
+					],
+				}
+			);
+			expect(result).toEqual(successUserResponseFromDataBase);
 		});
 	});
 });

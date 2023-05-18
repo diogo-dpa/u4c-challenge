@@ -74,7 +74,7 @@ describe("UserService", () => {
 		it("should call the getEvent with the right parameters and return correctly", async () => {
 			jest
 				.spyOn(EventRepository.prototype, "getEvent")
-				.mockResolvedValue(successEventResponseFromDatabase as any);
+				.mockResolvedValue(successEventResponseFromDatabase);
 
 			const action = async () => {
 				return await eventService.getEvent(idParamsInputMock);
@@ -92,7 +92,7 @@ describe("UserService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(EventRepository.prototype, "getEvent")
-				.mockResolvedValue(successEventResponseFromDatabase as any);
+				.mockResolvedValue(successEventResponseFromDatabase);
 			jest
 				.spyOn(AddressRepository.prototype, "deleteAddress")
 				.mockResolvedValue(null);
@@ -133,7 +133,7 @@ describe("UserService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(EventRepository.prototype, "saveEvent")
-				.mockResolvedValue(successEventResponseFromDatabase as any);
+				.mockResolvedValue(successEventResponseFromDatabase);
 		});
 
 		it("should return error when trying to get an user while creating an event", async () => {
@@ -149,7 +149,7 @@ describe("UserService", () => {
 		it("should return error when trying to get a vehicle while creating an event", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successGetUserResponseFromDatabase as any);
+				.mockResolvedValue(successGetUserResponseFromDatabase);
 
 			jest
 				.spyOn(VehicleRepository.prototype, "getVehicle")
@@ -165,26 +165,22 @@ describe("UserService", () => {
 		it("should call the method with the right parameters when the thirdPartyUser already exists in database as a client", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successGetUserResponseFromDatabase as any);
+				.mockResolvedValue(successGetUserResponseFromDatabase);
 
 			jest
 				.spyOn(VehicleRepository.prototype, "getVehicle")
-				.mockResolvedValue(successGetVehicleResponseFromDatabase as any);
+				.mockResolvedValue(successGetVehicleResponseFromDatabase);
 
 			jest
 				.spyOn(DocumentRepository.prototype, "getDocumentByCPF")
-				.mockResolvedValue(successGetDocumentResponseFromDatabase as any);
+				.mockResolvedValue(successGetDocumentResponseFromDatabase);
 
 			jest
 				.spyOn(UserRepository.prototype, "updateUser")
-				.mockResolvedValue(successGetUserResponseFromDatabase as any);
-
-			jest
-				.spyOn(EventRepository.prototype, "saveEvent")
-				.mockResolvedValue(successEventResponseFromDatabase as any);
+				.mockResolvedValue(successGetUserResponseFromDatabase);
 
 			const action = async () => {
-				return await eventService.saveEvent(saveEventInputRequest as any);
+				return await eventService.saveEvent(saveEventInputRequest);
 			};
 
 			const result = await action();
@@ -207,11 +203,11 @@ describe("UserService", () => {
 		it("should call the method with the right parameters when the thirdPartyUser doesn't exist in database", async () => {
 			jest
 				.spyOn(UserRepository.prototype, "getUser")
-				.mockResolvedValue(successGetUserResponseFromDatabase as any);
+				.mockResolvedValue(successGetUserResponseFromDatabase);
 
 			jest
 				.spyOn(VehicleRepository.prototype, "getVehicle")
-				.mockResolvedValue(successGetVehicleResponseFromDatabase as any);
+				.mockResolvedValue(successGetVehicleResponseFromDatabase);
 
 			jest
 				.spyOn(DocumentRepository.prototype, "getDocumentByCPF")
@@ -219,20 +215,14 @@ describe("UserService", () => {
 
 			jest
 				.spyOn(DocumentRepository.prototype, "saveDocument")
-				.mockResolvedValue(successGetDocumentResponseFromDatabase as any);
+				.mockResolvedValue(successGetDocumentResponseFromDatabase);
 
 			jest
 				.spyOn(UserRepository.prototype, "saveUser")
-				.mockResolvedValue(
-					successSaveThirdPartyUserResponseFromDataBase as any
-				);
-
-			jest
-				.spyOn(EventRepository.prototype, "saveEvent")
-				.mockResolvedValue(successEventResponseFromDatabase as any);
+				.mockResolvedValue(successSaveThirdPartyUserResponseFromDataBase);
 
 			const action = async () => {
-				return await eventService.saveEvent(saveEventInputRequest as any);
+				return await eventService.saveEvent(saveEventInputRequest);
 			};
 
 			const result = await action();

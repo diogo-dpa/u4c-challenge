@@ -4,6 +4,10 @@ jest.mock("../../config/database");
 import { DocumentRepository } from "../../repositories/DocumentRepository";
 import { DocumentService } from "../DocumentService";
 import { DataSource } from "typeorm";
+import {
+	idParamsInputMock,
+	successDocumentResponseFromDatabase,
+} from "../__mocks__/DocumentService.mock";
 
 describe("DocumentService", () => {
 	const DataSourceMock = DataSource as jest.Mock<DataSource>;
@@ -20,43 +24,11 @@ describe("DocumentService", () => {
 		jest.restoreAllMocks();
 	});
 
-	const successResponseFromDataBase = {
-		id: 1,
-		createdAt: new Date("2023-05-17T23:27:55.440Z"),
-		updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-		cnh: "XXX",
-		cpf: "YYY",
-		rg: "WWW",
-		passport: "LLL",
-		user: {
-			fullName: "João",
-			birthDate: new Date("2000-05-17T00:00:00.440Z"),
-			cellphone: "61 9999-9999",
-			email: "joao@email.com",
-			isThirdPartyUser: false,
-			id: 1,
-			addresses: {
-				id: 1,
-				createdAt: new Date("2023-05-17T23:27:55.440Z"),
-				updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-				street: "Avenida do Contorno",
-				zipcode: "30123456",
-				country: "Brazil",
-				complement: "Near the bakery",
-				number: 302,
-				neighborhood: "Centro",
-				state: "MG",
-			},
-			createdAt: new Date("2023-05-17T23:27:55.440Z"),
-			updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-		},
-	};
-
 	describe("getDocumentByCPF", () => {
 		it("should call the getDocumentByCPF with the right parameters and return correctly", async () => {
 			jest
 				.spyOn(DocumentRepository.prototype, "getDocumentByCPF")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successDocumentResponseFromDatabase);
 
 			const action = async () => {
 				return await documentService.getDocumentByCPF("XXX");
@@ -66,20 +38,22 @@ describe("DocumentService", () => {
 
 			expect(documentRepository.getDocumentByCPF).toHaveBeenCalledTimes(1);
 			expect(documentRepository.getDocumentByCPF).toHaveBeenCalledWith("XXX");
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(result).toEqual(successDocumentResponseFromDatabase);
 		});
 	});
 
 	describe("deleteDocument", () => {
 		it("should call the deleteDocument with the right parameters", async () => {
 			const action = async () => {
-				return await documentService.deleteDocument(1);
+				return await documentService.deleteDocument(idParamsInputMock);
 			};
 
 			await action();
 
 			expect(documentRepository.deleteDocument).toHaveBeenCalledTimes(1);
-			expect(documentRepository.deleteDocument).toHaveBeenCalledWith(1);
+			expect(documentRepository.deleteDocument).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
 		});
 	});
 
@@ -87,10 +61,10 @@ describe("DocumentService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(DocumentRepository.prototype, "saveDocument")
-				.mockResolvedValue(successResponseFromDataBase as any);
+				.mockResolvedValue(successDocumentResponseFromDatabase);
 		});
 
-		it("should call the method with the right parameters", async () => {
+		it("should call the method saveDocument with the right parameters", async () => {
 			const action = async () => {
 				return await documentService.saveDocument("XXX", "YYY", "WWW", "LLL");
 			};
@@ -104,7 +78,7 @@ describe("DocumentService", () => {
 				"WWW",
 				"LLL"
 			);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(result).toEqual(successDocumentResponseFromDatabase);
 		});
 	});
 });

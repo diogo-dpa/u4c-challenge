@@ -8,6 +8,10 @@ import {
 	OCCURENCE_TYPE_NOT_FOUND_ERROR_MESSAGE,
 } from "../../utils/consts";
 import { DataSource } from "typeorm";
+import {
+	idParamsInputMock,
+	successOccurenceTypeResponseFromDataBase,
+} from "../__mocks__/OccurenceTypeService.mock";
 
 describe("OccurenceTypeService", () => {
 	const DataSourceMock = DataSource as jest.Mock<DataSource>;
@@ -26,18 +30,11 @@ describe("OccurenceTypeService", () => {
 		jest.restoreAllMocks();
 	});
 
-	const successResponseFromDataBase = {
-		id: 1,
-		type: "Accident",
-		createdAt: new Date("2023-05-17T23:27:55.440Z"),
-		updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-	};
-
 	describe("saveOccurenceType", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(OccurenceTypeRepository.prototype, "saveOccurenceType")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successOccurenceTypeResponseFromDataBase);
 		});
 
 		it("should return error when the Occurence Type is wrong", async () => {
@@ -63,7 +60,7 @@ describe("OccurenceTypeService", () => {
 			expect(occurenceTypeRepository.saveOccurenceType).toHaveBeenCalledWith(
 				"Accident"
 			);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(result).toEqual(successOccurenceTypeResponseFromDataBase);
 		});
 	});
 
@@ -74,7 +71,7 @@ describe("OccurenceTypeService", () => {
 				.mockResolvedValue(null);
 
 			const action = async () => {
-				await occurenceTypeService.getOccurenceType(2);
+				await occurenceTypeService.getOccurenceType(idParamsInputMock);
 			};
 
 			await expect(action()).rejects.toThrow(
@@ -85,24 +82,28 @@ describe("OccurenceTypeService", () => {
 		it("should call the getOccurenceType with the right parameters and return correctly", async () => {
 			jest
 				.spyOn(OccurenceTypeRepository.prototype, "getOccurenceType")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successOccurenceTypeResponseFromDataBase);
 
 			const action = async () => {
-				return await occurenceTypeService.getOccurenceType(1);
+				return await occurenceTypeService.getOccurenceType(idParamsInputMock);
 			};
 
 			const result = await action();
 
 			expect(occurenceTypeRepository.getOccurenceType).toHaveBeenCalledTimes(1);
-			expect(occurenceTypeRepository.getOccurenceType).toHaveBeenCalledWith(1);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(occurenceTypeRepository.getOccurenceType).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
+			expect(result).toEqual(successOccurenceTypeResponseFromDataBase);
 		});
 	});
 
 	describe("deleteOccurenceType", () => {
 		it("should call the deleteOccurenceType with the right parameters", async () => {
 			const action = async () => {
-				return await occurenceTypeService.deleteOccurenceType(1);
+				return await occurenceTypeService.deleteOccurenceType(
+					idParamsInputMock
+				);
 			};
 
 			await action();
@@ -111,7 +112,7 @@ describe("OccurenceTypeService", () => {
 				1
 			);
 			expect(occurenceTypeRepository.deleteOccurenceType).toHaveBeenCalledWith(
-				1
+				idParamsInputMock
 			);
 		});
 	});

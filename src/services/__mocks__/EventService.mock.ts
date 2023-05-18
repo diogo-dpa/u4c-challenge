@@ -41,7 +41,7 @@ export const saveEventInputRequest = {
 	clientId: 1,
 	vehicleId: 1,
 	...saveEventCoreData,
-};
+} as any;
 
 export const successGetUserResponseFromDatabase = {
 	id: 2,
@@ -75,7 +75,7 @@ export const successGetUserResponseFromDatabase = {
 			neighborhood: "Centro",
 		},
 	],
-};
+} as any;
 
 export const successGetVehicleResponseFromDatabase = {
 	id: 1,
@@ -91,7 +91,7 @@ export const successGetVehicleResponseFromDatabase = {
 	owner: {
 		...successGetUserResponseFromDatabase,
 	},
-};
+} as any;
 
 export const successGetDocumentResponseFromDatabase = {
 	id: 1,
@@ -123,7 +123,7 @@ export const successGetDocumentResponseFromDatabase = {
 		createdAt: "2023-05-17T23:27:55.440Z",
 		updatedAt: "2023-05-17T23:27:55.440Z",
 	},
-};
+} as any;
 
 export const successSaveThirdPartyUserResponseFromDataBase = {
 	id: 2,
@@ -157,7 +157,7 @@ export const successSaveThirdPartyUserResponseFromDataBase = {
 			neighborhood: "Centro",
 		},
 	],
-};
+} as any;
 
 export const saveEventPostProcessedInput = {
 	client: [
@@ -249,4 +249,4 @@ export const successEventResponseFromDatabase = {
 	id: 1,
 	createdAt: "2023-05-19T00:00:18.448Z",
 	updatedAt: "2023-05-19T00:00:18.448Z",
-};
+} as any;

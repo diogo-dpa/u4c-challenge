@@ -8,7 +8,11 @@ import {
 	VEHICLE_NOT_FOUND_ERROR_MESSAGE,
 } from "../../utils/consts";
 import { DataSource } from "typeorm";
-import { Vehicle } from "../../config/entities/Vehicle";
+import {
+	idParamsInputMock,
+	saveVehicleInputRequest,
+	successVehicleResponseFromDataBase,
+} from "../__mocks__/VehicleService.mock";
 
 describe("VehicleService", () => {
 	const DataSourceMock = DataSource as jest.Mock<DataSource>;
@@ -25,19 +29,6 @@ describe("VehicleService", () => {
 		jest.restoreAllMocks();
 	});
 
-	const successResponseFromDataBase = {
-		id: 1,
-		createdAt: new Date("2023-05-17T23:27:55.440Z"),
-		updatedAt: new Date("2023-05-17T23:27:55.440Z"),
-		brand: "Fiat",
-		model: "Uno",
-		mileage: 40000,
-		chassis: "XXX",
-		fabricationYear: 2009,
-		modelYear: 2009,
-		plate: "XXX1111",
-	} as Vehicle;
-
 	describe("getVehicle", () => {
 		it("should return error when trying to get an vehicle that doesn't exists", async () => {
 			jest
@@ -45,7 +36,7 @@ describe("VehicleService", () => {
 				.mockResolvedValue(null);
 
 			const action = async () => {
-				await vehicleService.getVehicle(2);
+				await vehicleService.getVehicle(idParamsInputMock);
 			};
 
 			await expect(action()).rejects.toThrow(VEHICLE_NOT_FOUND_ERROR_MESSAGE);
@@ -54,30 +45,34 @@ describe("VehicleService", () => {
 		it("should call the getVehicle with the right parameters and return correctly", async () => {
 			jest
 				.spyOn(VehicleRepository.prototype, "getVehicle")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successVehicleResponseFromDataBase);
 
 			const action = async () => {
-				return await vehicleService.getVehicle(1);
+				return await vehicleService.getVehicle(idParamsInputMock);
 			};
 
 			const result = await action();
 
 			expect(vehicleRepository.getVehicle).toHaveBeenCalledTimes(1);
-			expect(vehicleRepository.getVehicle).toHaveBeenCalledWith(1);
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(vehicleRepository.getVehicle).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
+			expect(result).toEqual(successVehicleResponseFromDataBase);
 		});
 	});
 
 	describe("deleteVehicle", () => {
 		it("should call the deleteVehicle with the right parameters", async () => {
 			const action = async () => {
-				return await vehicleService.deleteVehicle(1);
+				return await vehicleService.deleteVehicle(idParamsInputMock);
 			};
 
 			await action();
 
 			expect(vehicleRepository.deleteVehicle).toHaveBeenCalledTimes(1);
-			expect(vehicleRepository.deleteVehicle).toHaveBeenCalledWith(1);
+			expect(vehicleRepository.deleteVehicle).toHaveBeenCalledWith(
+				idParamsInputMock
+			);
 		});
 	});
 
@@ -85,35 +80,21 @@ describe("VehicleService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(VehicleRepository.prototype, "saveVehicle")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successVehicleResponseFromDataBase);
 		});
 
 		it("should call the method with the right parameters", async () => {
 			const action = async () => {
-				return await vehicleService.saveVehicle({
-					brand: "Fiat",
-					model: "Uno",
-					mileage: 40000,
-					chassis: "XXX",
-					fabricationYear: 2009,
-					modelYear: 2009,
-					plate: "XXX1111",
-				} as any);
+				return await vehicleService.saveVehicle(saveVehicleInputRequest);
 			};
 
 			const result = await action();
 
 			expect(vehicleRepository.saveVehicle).toHaveBeenCalledTimes(1);
-			expect(vehicleRepository.saveVehicle).toHaveBeenCalledWith({
-				brand: "Fiat",
-				model: "Uno",
-				mileage: 40000,
-				chassis: "XXX",
-				fabricationYear: 2009,
-				modelYear: 2009,
-				plate: "XXX1111",
-			});
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(vehicleRepository.saveVehicle).toHaveBeenCalledWith(
+				saveVehicleInputRequest
+			);
+			expect(result).toEqual(successVehicleResponseFromDataBase);
 		});
 	});
 
@@ -121,20 +102,12 @@ describe("VehicleService", () => {
 		beforeEach(() => {
 			jest
 				.spyOn(VehicleRepository.prototype, "updateVehicle")
-				.mockResolvedValue(successResponseFromDataBase);
+				.mockResolvedValue(successVehicleResponseFromDataBase);
 		});
 
 		it("should return error when trying to get an vehicle that doesn't exists", async () => {
 			const action = async () => {
-				await vehicleService.updateVehicle(1, {
-					brand: "Fiat",
-					model: "Uno",
-					mileage: 40000,
-					chassis: "XXX",
-					fabricationYear: 2009,
-					modelYear: 2009,
-					plate: "XXX1111",
-				} as any);
+				await vehicleService.updateVehicle(1, saveVehicleInputRequest);
 			};
 
 			await expect(action()).rejects.toThrow(
@@ -144,7 +117,7 @@ describe("VehicleService", () => {
 
 		it("should call the method with the right parameters", async () => {
 			const action = async () => {
-				return await vehicleService.updateVehicle(1, {
+				return await vehicleService.updateVehicle(idParamsInputMock, {
 					mileage: 40000,
 				} as any);
 			};
@@ -152,10 +125,13 @@ describe("VehicleService", () => {
 			const result = await action();
 
 			expect(vehicleRepository.updateVehicle).toHaveBeenCalledTimes(1);
-			expect(vehicleRepository.updateVehicle).toHaveBeenCalledWith(1, {
-				mileage: 40000,
-			});
-			expect(result).toEqual(successResponseFromDataBase);
+			expect(vehicleRepository.updateVehicle).toHaveBeenCalledWith(
+				idParamsInputMock,
+				{
+					mileage: 40000,
+				}
+			);
+			expect(result).toEqual(successVehicleResponseFromDataBase);
 		});
 	});
 });
