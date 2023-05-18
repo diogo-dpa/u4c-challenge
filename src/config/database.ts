@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
 	database: "postgres",
 	entities: [User, Address, Document, Event, OccurenceType, Vehicle],
 	synchronize: true,
-	logging: true,
+	logging: false,
 	migrations: [__dirname + "./src/database/migrations/*{.ts}"],
 	migrationsTableName: "migrations",
 });

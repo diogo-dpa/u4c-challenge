@@ -5,25 +5,25 @@ import { User } from "./User";
 
 @Entity()
 export class Address extends BaseEntity {
-	@Column()
+	@Column("text", { nullable: false })
 	zipcode: string;
 
-	@Column()
+	@Column("text", { nullable: false })
 	street: string;
 
-	@Column()
+	@Column("integer", { nullable: false })
 	number: number;
 
-	@Column()
+	@Column("text", { nullable: true })
 	complement: string;
 
-	@Column()
+	@Column("text", { nullable: false })
 	state: string;
 
-	@Column()
+	@Column("text", { nullable: false })
 	country: string;
 
-	@Column()
+	@Column("text", { nullable: false })
 	neighborhood: string;
 
 	@OneToMany(() => Event, (event) => event.address)

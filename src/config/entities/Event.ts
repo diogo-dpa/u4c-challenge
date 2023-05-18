@@ -6,7 +6,6 @@ import {
 	ManyToMany,
 	ManyToOne,
 	OneToOne,
-	Unique,
 } from "typeorm";
 import { BaseEntity } from "./BaseEntity";
 import { User } from "./User";
@@ -53,9 +52,9 @@ export class Event extends BaseEntity {
 	@JoinColumn()
 	address: Address;
 
-	@Column()
+	@Column("timestamp", { nullable: false })
 	eventDate: Date;
 
-	@Column()
+	@Column("integer", { nullable: false })
 	eventCost: number;
 }

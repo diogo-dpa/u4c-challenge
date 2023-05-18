@@ -5,16 +5,16 @@ import { User } from "./User";
 @Entity()
 @Unique(["rg", "cpf", "cnh", "passport"])
 export class Document extends BaseEntity {
-	@Column()
+	@Column("text", { nullable: false })
 	rg: string;
 
-	@Column()
+	@Column("text", { nullable: false })
 	cpf: string;
 
-	@Column()
+	@Column("text", { nullable: false })
 	cnh: string;
 
-	@Column()
+	@Column("text", { nullable: true })
 	passport: string;
 
 	@OneToOne(() => User, (user) => user.document, { onDelete: "CASCADE" })

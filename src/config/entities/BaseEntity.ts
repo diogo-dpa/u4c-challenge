@@ -1,12 +1,13 @@
 import {
-	Column,
 	PrimaryGeneratedColumn,
 	CreateDateColumn,
 	UpdateDateColumn,
 } from "typeorm";
 
 export class BaseEntity {
-	@PrimaryGeneratedColumn()
+	@PrimaryGeneratedColumn({
+		type: "integer",
+	})
 	id: number;
 
 	@CreateDateColumn({

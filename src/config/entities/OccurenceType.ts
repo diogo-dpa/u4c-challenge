@@ -4,6 +4,6 @@ import { BaseEntity } from "./BaseEntity";
 @Entity()
 @Unique(["type"])
 export class OccurenceType extends BaseEntity {
-	@Column()
+	@Column("text", { nullable: false })
 	type: string;
 }

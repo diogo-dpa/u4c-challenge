@@ -17,19 +17,19 @@ import { Event } from "./Event";
 @Entity()
 @Unique(["email"])
 export class User extends BaseEntity {
-	@Column()
+	@Column("text", { nullable: false })
 	fullName: string;
 
-	@Column()
+	@Column("date", { nullable: false })
 	birthDate: Date;
 
-	@Column()
+	@Column("text", { nullable: false })
 	email: string;
 
-	@Column()
+	@Column("bool", { nullable: false })
 	isThirdPartyUser: boolean;
 
-	@Column()
+	@Column("text", { nullable: false })
 	cellphone: string;
 
 	@ManyToMany(() => Address, (address) => address.users, {
