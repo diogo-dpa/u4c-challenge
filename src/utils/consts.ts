@@ -15,3 +15,17 @@ export const OCCURENCE_TYPE_NOT_EXISTS_ERROR_MESSAGE =
 	"Occurence Type does not exists.";
 
 export const INVALID_ADDRESS_ID_ERROR_MESSAGE = "Invalid address id.";
+
+export const MIN_CHARACTERS_NAME = 2;
+export const MAX_CHARACTERS_NAME = 50;
+export const RG_CHARACTERS_LIMIT = 8;
+export const CPF_CHARACTERS_LIMIT = 11;
+export const CNH_CHARACTERS_LIMIT = 10;
+export const ZIPCODE_CHARACTERS_LIMIT = 8;
+export const MIN_COMMON_STRING_CHARACTERS_LIMIT = 4;
+export const MAX_COMMON_STRING_CHARACTERS_LIMIT = 50;
+export const MIN_STATE_CHARACTERS_LIMIT = 4;
+export const MIN_BRAND_MODEL_CHARACTERS_LIMIT = 2;
+export const MAX_BRAND_MODEL_CHARACTERS_LIMIT = 30;
+export const CHASSIS_CHARACTERS_LIMIT = 17;
+export const VEHICLE_PLATE_CHARACTERS_LIMIT = 7;
